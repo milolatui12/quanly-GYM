@@ -1,0 +1,16 @@
+.suppliers-container{
+    padding: 10px 10px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+
+    #suppliers-btn {
+        width: 15vw;
+        height: 50px;
+        align-self: flex-end;
+        margin: 0 30px 30px 0;
+        border-radius: 40px;
+        outline: none;
+        cursor: pointer;
+    }
+}
