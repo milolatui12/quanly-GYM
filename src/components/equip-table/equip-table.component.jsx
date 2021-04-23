@@ -8,13 +8,13 @@ import {
 
 import "ka-table/style.css";
 
-const ReceiptTable = ({ receipts }) => {
-  const dataArray = receipts.map(
+const EquipTable = ({ equips }) => {
+  const dataArray = equips.map(
     (x, index) => ({
       column1: `${index + 1}`,
       column2: x.rcpCode,
       column3: x.date,
-      column4: x.supplier.name,
+      column4: x.supplier.TEN_NCC,
       column5: x.total,
       column6: 'edit',
       id: index,
@@ -55,7 +55,7 @@ const ReceiptTable = ({ receipts }) => {
         data: dataArray,
         loading: true
       })   
-  }, [receipts])
+  }, [equips])
   const dispatch = async (action) => {
     changeTableProps((prevState) => kaReducer(prevState, action));
   }
@@ -68,4 +68,4 @@ const ReceiptTable = ({ receipts }) => {
 };
 
 
-export default ReceiptTable;
+export default EquipTable;

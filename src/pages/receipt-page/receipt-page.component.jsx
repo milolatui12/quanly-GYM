@@ -6,13 +6,17 @@ import CustomButton from '../../components/custom-button/custom-button.component
 
 import './receipt-page.styles.scss';
 
-const ReceiptPage = ({ history, match }) => {
+const ReceiptPage = ({ history, match, receipts }) => {
     return (
         <div className="device-container">
             <CustomButton id="device-btn" onClick={() => history.push(`${match.url}/adddevice`)}>Thêm</CustomButton>
-            <ReceiptTable receipts={[1]}/>
+            <ReceiptTable receipts={receipts}/>
         </div>
     )
 }
 
-export default ReceiptPage;
+const mapStateToProps = ({receipt}) => ({
+    receipts: receipt.receipts
+})
+
+export default connect(mapStateToProps)(ReceiptPage);

@@ -66,7 +66,7 @@ const ReceiptForm = ({ visible, onVisible, addEG }) => {
                             name="warranty_period"
                             placeholder="Nhập hạn bảo hành"
                             autoComplete="off"
-                            ref={register({required: 'Warranty is required.'})}
+                            ref={register({required: 'Warranty is required.', min: 0})}
                             className={`${errors.warranty_period ? 'input-error' : ''}`}
                         />
                         {errors.warranty_period && (
@@ -88,7 +88,7 @@ const ReceiptForm = ({ visible, onVisible, addEG }) => {
                             name="quantity"
                             placeholder="Nhập số lượng"
                             autoComplete="off"
-                            ref={register({required: 'Quantity is required.'})}
+                            ref={register({required: 'Quantity is required.', min: 0})}
                             className={`${errors.quantity ? 'input-error' : ''}`}
                         />
                         {errors.quantity && (
@@ -102,7 +102,7 @@ const ReceiptForm = ({ visible, onVisible, addEG }) => {
                             name="price"
                             placeholder="Nhập đơn giá"
                             autoComplete="off"
-                            ref={register({required: 'Price is required.'})}
+                            ref={register({required: 'Price is required.', min: 0})}
                             className={`${errors.price ? 'input-error' : ''}`}
                         />
                         {errors.price && (

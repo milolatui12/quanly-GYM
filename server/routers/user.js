@@ -44,6 +44,7 @@ router.post('/login', (req, res) => {
 
 router.post('/addsupplier', (req, res) => {
     const { address, name, taxId } = req.body;
+    console.log(req.body)
     try {
         suppliers.push({
             address,

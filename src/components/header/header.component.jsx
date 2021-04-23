@@ -16,6 +16,7 @@ const Header = ({ signOut, user }) => {
                     <Link to="/">Home</Link>
                     <Link to="/suppliers">Suppliers</Link>
                     <Link to="/receipt">Receipt</Link>
+                    <Link to="/equipment">Equipment</Link>
                     <Link to="/" onClick={() => signOut()}>Sign out</Link>
                 </Menu>
                 <Link className="logo-container" to='/'>

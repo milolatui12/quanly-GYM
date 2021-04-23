@@ -11,6 +11,11 @@ const equipmentGroupReducer = (state = INTIAL_STATE, action) => {
                 ...state,
                 eGList: [...state.eGList, action.payload]
             }
+        case EquipmentGroupActionTypes.CLEAN_EQUIPMENT_GROUP:
+            return {
+                ...state,
+                eGList: []
+            }
         default:
             return state;
     }

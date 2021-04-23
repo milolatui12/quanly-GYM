@@ -1,8 +1,20 @@
 import { createSelector } from 'reselect';
 
-const selectSupplier = state => state.suppliers;
+const selectSuppliers = state => state.supplier;
 
-export const selectSuppliers = createSelector(
-    [selectSupplier],
-    suppliers => suppliers.suppliers
+export const selectSupplierList = createSelector(
+   [selectSuppliers],
+   supplier => supplier.suppliers
 )
+
+export const selectSupplier = suppId =>
+   createSelector(
+      [selectSuppliers],
+      suppliers => {
+         const supp = suppliers.suppliers.find(supp => supp.id == suppId)
+         return {
+            supplier: suppliers.suppliers.find(supp => supp.id == suppId),
+            index: suppliers.suppliers.indexOf(supp)
+         }
+      }
+   )

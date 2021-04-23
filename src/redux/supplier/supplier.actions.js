@@ -9,3 +9,10 @@ export const fetchSuppliers = (suppliers) => ({
     type: SupplierActionTypes.FETCH_SUPPLIERS,
     payload: suppliers
 })
+
+export const updateSupplier = (index, supp) => ({
+    type: SupplierActionTypes.UPDATE_SUPPLIER, 
+    payload: {
+        index, supp
+    }
+})

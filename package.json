@@ -31,7 +31,7 @@
     "web-vitals": "^0.2.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "set PORT=8000 && react-scripts start",
     "server": "cd server && npm start",
     "deploy": "\"npm start\" \"npm run server\"",
     "build": "react-scripts build",

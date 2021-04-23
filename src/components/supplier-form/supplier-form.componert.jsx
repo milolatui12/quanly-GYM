@@ -15,7 +15,7 @@ const SupplierForm = ({ visible, onVisible, addSupplier }) => {
 
     const onSubmit = async (data) => {
         try {
-            const response = await axios.post('http://localhost:3030/addsupplier', {
+            const response = await axios.post('http://localhost:3030/add-supplier', {
                 address: data.address,
                 name: data.name,
                 taxId: data.tax_num

@@ -16,17 +16,22 @@ const Login = ({ setUser, fetchSuppliers }) => {
     const onSubmit = async (data) => {
         try {
             const response = await axios.post('http://localhost:3030/login', {
-                userName: data.user_name,
+                username: data.user_name,
                 password: data.password,
             });
             if (response.status == 204) {
                 alert("sai thông tin đăng nhập")
             } else {
                 setUser({ 
-                    userName: response.data.userName,
-                    role: response.data.role    
+                    userName: response.data.USERNAME,
+                    role: response.data.ROLES    
                 });
-                fetchSuppliers(response.data.suppliers)
+                try {
+                    const suppliers = await axios.get('http://localhost:3030/fetch-suppliers')
+                    fetchSuppliers(suppliers.data)
+                } catch (error) {
+                    console.log(error)
+                }
             }
         } catch (error) {
             alert(error);
