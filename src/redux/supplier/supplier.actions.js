@@ -16,3 +16,8 @@ export const updateSupplier = (index, supp) => ({
         index, supp
     }
 })
+
+export const deleteSupplier = (id) => ({
+    type: SupplierActionTypes.DELETE_SUPPLIER,
+    payload: id
+})

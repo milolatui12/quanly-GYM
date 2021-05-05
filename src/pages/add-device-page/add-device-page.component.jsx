@@ -2,34 +2,67 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { Form, Button } from 'react-bootstrap';
+import axios from 'axios';
 
 import DeviceTable from '../../components/device-table/device-table.component';
 import ReceiptForm from '../../components/receipt-form/receipt-form.component';
 
 import { addEquipmentGroup, cleanEquipmentGroup } from '../../redux/equipment-group/equipment-group.actions';
 import { addReceipt } from '../../redux/receipt/receipt.actions';
+import { addEquip } from '../../redux/equipment/equipment.actions';
 
 import './add-device-page.styles.scss';
 
-const AddDevicePage = ({ suppliers, eGList, addEG, cleanEG, addRcp, history }) => {
-    const { register, handleSubmit, errors, reset } = useForm();
+const AddDevicePage = ({ suppliers, eGList, addEG, cleanEG, addRcp, history, staffId, addEquip }) => {
+    const { register, handleSubmit, errors } = useForm();
     const [visible, setVisible] = useState(false);
     const [supp, setSupp] = useState(suppliers[0].id);
+
 
     const onVisible = () => {
         setVisible(!visible)
     }
-    const onSubmit = (data) => {
+    const onSubmit = async (data) => {
         const total = eGList.reduce((acc, currItem) => (acc + (currItem.quantity*currItem.price)), 0)
         const supplier = suppliers.find(x => x.id == supp)
-        addRcp({
+        try {
+            const response = await axios.post('http://localhost:3030/add-receipt', {
                 rcpCode: data.rcp_code,
                 date: data.date,
-                supplier: supplier,
-                equipments: [...eGList],
+                supplierId: supplier.id,
+                staffId: staffId,
                 total: total
-        })
-        history.push('/receipt')
+            })
+            console.log(response.data)
+            if(response.status === 200) {
+                addRcp({
+                    ...response.data,
+                    equipments: [...eGList],
+                    rcp_date: response.data.rcp_date.slice(0, 10)
+                })
+
+                eGList.forEach(async eG => {
+                    try {
+                        const res = await axios.post('http://localhost:3030/add-eg', {
+                            name: eG.name, 
+                            warranty: eG.warrantyPeriod, 
+                            unit: eG.unit, 
+                            batch: eG.batch, 
+                            rcpCode: data.rcp_code, 
+                            quantity: eG.quantity, 
+                            price: eG.price
+                        })
+                    } catch (error) {
+                        alert(error.message)
+                    }
+                })
+                history.push('/receipt')
+            } else {
+                alert(response.data)
+            }
+        } catch (error) {
+            alert(error.message)
+        }
     };
     useEffect(() => {
         return () => cleanEG()
@@ -90,15 +123,17 @@ const AddDevicePage = ({ suppliers, eGList, addEG, cleanEG, addRcp, history }) =
     )
 }
 
-const mapStateToProps = ({supplier, equipmentGroupList}) => ({
+const mapStateToProps = ({ user, supplier, equipmentGroupList }) => ({
     suppliers: supplier.suppliers,
-    eGList: equipmentGroupList.eGList
+    eGList: equipmentGroupList.eGList,
+    staffId: user.currentUser.id
 });
 
 const mapDispatchToProps = dispatch => ({
     addEG: (eG) => dispatch(addEquipmentGroup(eG)),
     addRcp: (rcp) => dispatch(addReceipt(rcp)), 
-    cleanEG: () =>  dispatch(cleanEquipmentGroup())
+    cleanEG: () =>  dispatch(cleanEquipmentGroup()),
+    addEquip: (equip) => dispatch(addEquip(equip))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddDevicePage);

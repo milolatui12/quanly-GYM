@@ -6,10 +6,11 @@ import axios from 'axios';
 
 import { setCurrentUser } from '../../redux/user/user.actions'; 
 import { fetchSuppliers } from '../../redux/supplier/supplier.actions';
+import { fetchReceipt } from '../../redux/receipt/receipt.actions';
 
 import './login.styles.scss';
 
-const Login = ({ setUser, fetchSuppliers }) => {
+const Login = ({ setUser, fetchSuppliers, fetchReceipts }) => {
     const { register, handleSubmit, errors } = useForm();
     const [userCredentials, setCredentials] = useState(''); 
 
@@ -22,10 +23,7 @@ const Login = ({ setUser, fetchSuppliers }) => {
             if (response.status == 204) {
                 alert("sai thông tin đăng nhập")
             } else {
-                setUser({ 
-                    userName: response.data.USERNAME,
-                    role: response.data.ROLES    
-                });
+                setUser(response.data);
                 try {
                     const suppliers = await axios.get('http://localhost:3030/fetch-suppliers')
                     fetchSuppliers(suppliers.data)
@@ -88,7 +86,8 @@ const Login = ({ setUser, fetchSuppliers }) => {
 
 const mapDispatchToProps = dispatch => ({
     setUser: user => dispatch(setCurrentUser(user)),
-    fetchSuppliers: suppliers => dispatch(fetchSuppliers(suppliers))
+    fetchSuppliers: suppliers => dispatch(fetchSuppliers(suppliers)),
+    fetchReceipts: receipts => dispatch(fetchReceipt(receipts))
 })
 
 export default connect(null, mapDispatchToProps)(Login);

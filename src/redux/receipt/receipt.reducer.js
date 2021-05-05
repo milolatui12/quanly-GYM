@@ -1,4 +1,5 @@
 import ReceiptActionTypes from './receipt.types';
+import { fetchReceipt, deleteReceipt } from './receipt.utils';
 
 const INITIAL_STATE = {
     receipts: []
@@ -10,6 +11,16 @@ const receiptReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 receipts: [...state.receipts, action.payload]
+            }
+        case ReceiptActionTypes.FETCH_RECEIPT:
+            return {
+                ...state,
+                receipts: fetchReceipt(action.payload)
+            }
+        case ReceiptActionTypes.DELETE_RECEIPT:
+            return {
+                ...state, 
+                receipts: deleteReceipt(state.receipts, action.payload)
             }
         default:
             return state

@@ -1,15 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
+import axios from 'axios';
 
 import { Table, kaReducer } from 'ka-table';
-import { ActionType, DataType, EditingMode, SortingMode, PagingPosition } from 'ka-table/enums';
-import {
-  hideLoading, loadData, setSingleAction, showLoading, updateData, updatePagesCount,
-} from 'ka-table/actionCreators';
+import { DataType, EditingMode, SortingMode, PagingPosition } from 'ka-table/enums';
+import { loadData } from 'ka-table/actionCreators';
+
+import { deleteSupplier } from '../../redux/supplier/supplier.actions';
 
 import "ka-table/style.css";
 
+
+
+const handleDel = async (id, delSupplier) => {
+  try {
+    const response = await axios.post('http://localhost:3030/delete-supplier', {
+      id: id
+    })
+    if(response.status == 200) {
+      delSupplier(id)
+    }
+  } catch (error) {
+    alert(error);
+  }
+}
 const EditButton = ({ rowData, history, match }) => {
   return (
    <div className='edit-cell-button'>
@@ -22,8 +37,21 @@ const EditButton = ({ rowData, history, match }) => {
    </div>
   );
 };
+const DeleteButton = ({ rowData, delSupplier }) => {
+  return (
+   <div className='edit-cell-button'>
+     <img
+      src='https://komarovalexander.github.io/ka-table/static/icons/delete.svg'
+      alt='Delete Row'
+      title='Delete Row'
+      onClick={() => handleDel(rowData.id, delSupplier)}
+    />
+   </div>
+  );
+};
 
-const SupplierTable = ({ suppliers, history, match }) => {
+
+const SupplierTable = ({ suppliers, history, match, delSupplier }) => {
   const dataArray = suppliers.map(
     (x, index) => ({
       order: `${index + 1}`,
@@ -35,7 +63,6 @@ const SupplierTable = ({ suppliers, history, match }) => {
     })
   );
 
-  // initial value of the *props
   const tablePropsInit = {
     columns: [
       { key: 'order', title: 'STT', dataType: DataType.Number, style: {width: 50} },
@@ -43,7 +70,8 @@ const SupplierTable = ({ suppliers, history, match }) => {
       { key: 'taxId', title: 'MÃ SỐ THUẾ', dataType: DataType.String, style: {width: 100} },
       { key: 'address', title: 'ĐỊA CHỈ', dataType: DataType.String, style: {width: 300} },
       //{ key: 'des', title: 'THÔNG TIN', dataType: DataType.String, style: {width: 200} },
-      { key: 'editColumn', title: '',  style: {width: 50}},
+      { key: 'editColumn', title: '',  style: {width: 50, cursor: "pointer"}},
+      { key: 'deleteColumn', title: '',  style: {width: 50, cursor: "pointer"}},
     ],
     loading: {
       enabled: false
@@ -60,12 +88,18 @@ const SupplierTable = ({ suppliers, history, match }) => {
     sortingMode: SortingMode.None,
   };
   
-  // in this case *props are stored in the state of parent component
   const [tableProps, changeTableProps] = useState(tablePropsInit);
-
+  useEffect(() => {
+    changeTableProps({
+      ...tableProps,
+      data: dataArray,
+      loading: true
+    })   
+  }, [suppliers])
   const dispatch = action => {
     changeTableProps(prevState => kaReducer(prevState, action));
   };
+
   return (
     <Table
       {...tableProps}
@@ -75,6 +109,9 @@ const SupplierTable = ({ suppliers, history, match }) => {
             if (props.column.key === 'editColumn'){
               return <EditButton {...props} history={history} match={match}/>
             }
+            if (props.column.key === 'deleteColumn'){
+              return <DeleteButton {...props} delSupplier={delSupplier} />
+            }
           }
         }
       }}
@@ -83,6 +120,9 @@ const SupplierTable = ({ suppliers, history, match }) => {
   );
 };
 
+const mapDispatchToProps = dispatch => ({
+  delSupplier: id => dispatch(deleteSupplier(id))
+})
 
 
-export default withRouter(SupplierTable);
+export default withRouter(connect(null, mapDispatchToProps)(SupplierTable));

@@ -1,23 +1,64 @@
 import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import axios from 'axios';
+
+import { deleteReceipt } from '../../redux/receipt/receipt.actions';
 
 import { Table, kaReducer } from 'ka-table';
 import { DataType, EditingMode, SortingMode, PagingPosition } from 'ka-table/enums';
-import {
-  hideLoading, loadData, setSingleAction, showLoading, updateData, updatePagesCount,
-} from 'ka-table/actionCreators';
+import { loadData } from 'ka-table/actionCreators';
 
 import "ka-table/style.css";
 
-const ReceiptTable = ({ receipts }) => {
+
+const handleDel = async (id, delReceipt) => {
+  try {
+    const response = await axios.post('http://localhost:3030/delete-receipt', {
+      rcp_code: id
+    })
+    if(response.status == 200) {
+      delReceipt(id)
+    }
+  } catch (error) {
+    alert(error);
+  }
+}
+
+const EditButton = ({ rowData, history, match }) => {
+  return (
+   <div className='edit-cell-button'>
+     <img
+      src='https://komarovalexander.github.io/ka-table/static/icons/edit.svg'
+      alt='Edit Row'
+      title='Edit Row'
+      onClick={() => history.push(`${match.url}/${rowData.id}`)}
+    />
+   </div>
+  );
+};
+const DeleteButton = ({ rowData, delReceipt }) => {
+  return (
+   <div className='edit-cell-button'>
+     <img
+      src='https://komarovalexander.github.io/ka-table/static/icons/delete.svg'
+      alt='Delete Row'
+      title='Delete Row'
+      onClick={() => handleDel(rowData.rcp_code, delReceipt)}
+    />
+   </div>
+  );
+};
+
+const ReceiptTable = ({ receipts, history, match, delReceipt }) => {
   const dataArray = receipts.map(
     (x, index) => ({
       column1: `${index + 1}`,
-      column2: x.rcpCode,
-      column3: x.date,
-      column4: x.supplier.name,
+      rcp_code: x.rcp_code,
+      column3: x.rcp_date,
+      column4: x.name,
       column5: x.total,
-      column6: 'edit',
-      id: index,
+      id: x.id,
     })
   );
 
@@ -25,11 +66,12 @@ const ReceiptTable = ({ receipts }) => {
   const tablePropsInit = {
     columns: [
       { key: 'column1', title: 'STT', dataType: DataType.Number, style: {width: 50} },
-      { key: 'column2', title: 'MÃ PHIẾU', dataType: DataType.String, style: {width: 150} },
+      { key: 'rcp_code', title: 'MÃ PHIẾU', dataType: DataType.String, style: {width: 150} },
       { key: 'column3', title: 'NGÀY NHẬP', dataType: DataType.String, style: {width: 100} },
       { key: 'column4', title: 'NHÀ CUNG CẤP', dataType: DataType.String, style: {width: 300} },
       { key: 'column5', title: 'TỔNG TIỀN', dataType: DataType.String, style: {width: 200} },
-      { key: 'column6', title: '', dataType: DataType.String, style: {width: 50} },
+      { key: 'editColumn', title: '',  style: {width: 50, cursor: "pointer"}},
+      { key: 'deleteColumn', title: '',  style: {width: 50, cursor: "pointer"}},
     ],
     loading: {
       enabled: false
@@ -47,7 +89,6 @@ const ReceiptTable = ({ receipts }) => {
     sortingMode: SortingMode.None,
   };
   
-  // in this case *props are stored in the state of parent component
   const [tableProps, changeTableProps] = useState(tablePropsInit);
   useEffect(() => {
       changeTableProps({
@@ -61,11 +102,27 @@ const ReceiptTable = ({ receipts }) => {
   }
   return (
     <Table
-      {...tableProps} // ka-table UI is rendered according to props
+      {...tableProps}
+      childComponents={{
+        cellText: {
+          content: (props) => {
+            if (props.column.key === 'editColumn'){
+              return <EditButton {...props} history={history} match={match} />
+            }
+            if (props.column.key === 'deleteColumn'){
+              return <DeleteButton {...props} delReceipt={delReceipt} />
+            }
+          }
+        }
+      }}
       dispatch={dispatch}
     />
   );
 };
 
 
-export default ReceiptTable;
+const mapDispatchToProps = dispatch => ({
+  delReceipt: id => dispatch(deleteReceipt(id))
+})
+
+export default withRouter(connect(null, mapDispatchToProps)(ReceiptTable));

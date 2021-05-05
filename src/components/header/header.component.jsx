@@ -24,7 +24,7 @@ const Header = ({ signOut, user }) => {
                 </Link>
             </div>
             <div className="user-name">
-                <span>{user.userName}_{user.role}</span>
+                <span>{user.username}_{user.rol}</span>
             </div>
         </div>
     )

@@ -9,7 +9,7 @@ const PORT  = process.PORT || 3030;
 app.use(express.json());
 app.use(cors());
 //app.use(userRouter);
-
+{
 // app.get('/test', async (req, res) => {
 //     try {
 //         const pool = await poolPromise;
@@ -43,7 +43,7 @@ app.use(cors());
 //         res.status(400).json({ message: "invalid" })
 //     }
 // })
-
+}
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
     try {
@@ -108,7 +108,133 @@ app.post('/edit-supplier', async (req, res) => {
         return res.status(500).send(error.message)
     }
 })
-    
+
+app.post('/delete-supplier', async (req, res) => {
+    try {
+        const pool = await poolPromise
+        await pool.request()
+            .input("id", sql.Int, req.body.id)
+            .execute("DeleteNcc").then(record => {
+                return res.status(200).send('success')
+            }).catch(err => res.status.send(err.message))
+    } catch (error) {
+        return res.status(500).send(error.message)
+    }
+})
+
+app.post('/add-receipt', async (req, res) => {
+    const { rcpCode, date, supplierId, staffId, total } = req.body
+    try {
+        const pool = await poolPromise
+        await pool.request()
+            .input("rcp_code", sql.NVarChar(20), rcpCode)
+            .input("rcp_date", sql.Date, date)
+            .input("supplier_id", sql.Int, supplierId)
+            .input("staff_id", sql.Int, staffId)
+            .input("total", sql.Money, total)
+            .execute("InsertReceipt").then(record => {
+                return res.status(200).json(record.recordset[0])
+            }).catch(err => res.status(500).send(err.message))
+    } catch (error) {
+        return res.status(500).send(error.message)
+    }
+})  
+
+app.get('/fetch-receipt', async (req, res) => {
+    try {
+        const pool = await poolPromise
+        await pool.request().query(`select receipt.id, rcp_code, rcp_date, supplier_id, name, staff_id, total from receipt inner join suppliers on receipt.supplier_id = suppliers.id`, (err, record) => {
+            if(err) return res.status(500).send(err.message)
+            return res.json(record.recordset)
+        })
+    } catch (error) {
+        res.status(500).send(error.message)
+    }
+})
+
+app.post('/delete-receipt', async (req, res) => {
+    const { rcp_code } = req.body
+    try {
+        const pool = await poolPromise
+        await pool.request()
+            .input("rcp_code", sql.NVarChar(20), rcp_code)
+            .execute("DeleteReceipt").then(record => {
+                return res.status(200).send('success')
+            }).catch(err => res.status(500).send(err.message))
+    } catch (error) {
+        return res.status(500).send(error.message)
+    }
+})
+
+app.post('/edit-receipt', async (req, res) => {
+    const { id, rcp_code, rcp_date, supplierId, staffId, total } = req.body
+    try {
+        const pool = await poolPromise
+        await pool.request()
+            .input("id", sql.Int, id)
+            .input("rcp_code", sql.NVarChar(20), rcp_code)
+            .input("rcp_date", sql.Date, rcp_date)
+            .input("supplier_id", sql.Int, supplierId)
+            .input("staff_id", sql.Int, staffId)
+            .input("total", sql.Money, total)
+            .execute("EditReceipt").then(record => {
+                return res.status(200).send('success')
+            }).catch(err => res.status(500).send(err.message))
+    } catch (error) {
+        return res.status(500).send(error.message)
+    }
+})
+
+app.post('/add-eg', async (req, res) => {
+    const { name, warranty, unit, batch, rcpCode, quantity, price } = req.body
+    try {
+        const pool = await poolPromise
+        await pool.request()
+            .input("eg_name", sql.NVarChar(20), name)
+            .input("warranty", sql.Int, warranty)
+            .input("unit", sql.NVarChar(10), unit)
+            .input("batch", sql.NVarChar(10), batch)
+            .input("rcp_code", sql.NVarChar(20), rcpCode)
+            .input("quantity", sql.Int, quantity)
+            .input("price", sql.Money, price)
+            .execute("InsertEg").then(record => {
+                return res.status(200).send('success')
+            }).catch(err => res.status(500).send(err.message))
+    } catch (error) {
+        return res.status(500).send(error.message)
+    }
+})
+
+app.post('/delete-eg', async (req, res) => {
+    try {
+        const pool = await poolPromise
+        await pool.request()
+            .input("rcp_code", sql.NVarChar(20), req.body.rcpCode)
+            .execute("DeleteEG").then(record => {
+                return res.status(200).send('success')
+            }).catch(err => res.status(500).send(err.message))
+    } catch (error) {
+        return res.status(500).send(error.message)
+    }
+})
+
+app.post('/fetch-eg', async (req, res) => {
+    try {
+        const pool = await poolPromise
+        await pool.request()
+            .input("rcp_code", sql.NVarChar(20), req.body.rcp_code)
+            .execute("FetchEG").then(record => {
+                return res.status(200).json(record.recordset)
+            }).catch(err => res.status(500).send(err.message))
+    } catch (error) {
+        return res.status(500).send(error.message)
+    }
+})
+
+
+
+
+
 
 app.get('/', (req, res) => {
     res.send('<h1>SERVER RUN</h1>');

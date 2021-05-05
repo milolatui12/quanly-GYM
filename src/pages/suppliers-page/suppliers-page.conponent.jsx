@@ -5,6 +5,7 @@ import { Button } from 'react-bootstrap';
 
 import { selectSupplierList } from '../../redux/supplier/supplier.selectors';
 
+
 import SupplierForm from '../../components/supplier-form/supplier-form.componert';
 import SupplierTable from '../../components/supplier-table/supplier-table.component';
 
@@ -17,6 +18,8 @@ const SupplierPage = ({ supplierList }) => {
     const onVisible = () => {
         setVisible(!visible)
     }
+
+
     return (
         <div className="suppliers-container">
             <Button id="suppliers-btn" onClick={() => onVisible()}>Thêm</Button>
@@ -26,9 +29,10 @@ const SupplierPage = ({ supplierList }) => {
     )
 };
 
-const mapStateToProps = createStructuredSelector({
-    supplierList: selectSupplierList
+const mapStateToProps = ({ supplier }) => ({
+    supplierList: supplier.suppliers
 })
+
 
 
 export default connect(mapStateToProps)(SupplierPage);

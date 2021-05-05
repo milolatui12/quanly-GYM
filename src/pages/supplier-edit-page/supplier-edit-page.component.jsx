@@ -38,7 +38,6 @@ const SupplierEdit = ({ supplier, updateSupplier, history }) => {
     }
     return (
         <div>
-            <h2>chinh sua: {supp.tax_id}</h2>
             <Form className="input-form">
                 <div className="col-l-9 offset-md-1">
                     <Form.Group controlId="tax_id">
@@ -65,11 +64,11 @@ const SupplierEdit = ({ supplier, updateSupplier, history }) => {
                             onChange={event => handleChange(event)}
                         />
                     </Form.Group>
+                    <Button
+                        onClick={() => handleSubmit()} 
+                        variant="primary" type="button">Submit</Button>
                 </div>
             </Form>
-            <Button
-                onClick={() => handleSubmit()} 
-                variant="primary" type="submit">Next</Button>
         </div>
     )
 }

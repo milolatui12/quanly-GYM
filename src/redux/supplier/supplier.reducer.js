@@ -1,5 +1,5 @@
 import SupplierActionTypes from './supplier.types';
-import { addSupplier, updateSupplier } from './supplier.utils';
+import { addSupplier, updateSupplier, deleteSupplier } from './supplier.utils';
 
 const INITIAL_STATE = {
     suppliers: []
@@ -21,6 +21,11 @@ const supplierReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 suppliers: updateSupplier(state.suppliers, action.payload.index, action.payload.supp)
+            }
+        case SupplierActionTypes.DELETE_SUPPLIER:
+            return {
+                ...state,
+                suppliers: deleteSupplier(state.suppliers, action.payload)
             }
         default:
             return state;
