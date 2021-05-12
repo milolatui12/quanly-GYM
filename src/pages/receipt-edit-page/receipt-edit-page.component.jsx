@@ -59,31 +59,31 @@ const SupplierEdit = ({ receipt, suppliers, eGList, addEG, cleanEG, history, fet
                 staffId: 1,
                 total: total
             })
-            if(respone.status == 200) {
-                try {
-                    await axios.post('http://localhost:3030/delete-eg', {
-                        rcpCode: rcp.rcp_code
-                    })
-                    eGList.forEach(async eG => {
-                        try {
-                            const res = await axios.post('http://localhost:3030/add-eg', {
-                                name: eG.name, 
-                                warranty: eG.warrantyPeriod, 
-                                unit: eG.unit, 
-                                batch: eG.batch, 
-                                rcpCode: rcp.rcp_code, 
-                                quantity: eG.quantity, 
-                                price: eG.price
-                            })
-                        } catch (error) {
-                            alert(error.message)
-                        }
-                    })
-                } catch (error) {
-                    alert(error.message)
-                }
-                history.push('/receipt')
-            }
+            // if(respone.status == 200) {
+            //     try {
+            //         await axios.post('http://localhost:3030/delete-eg', {
+            //             rcpCode: rcp.rcp_code
+            //         })
+            //         eGList.forEach(async eG => {
+            //             try {
+            //                 const res = await axios.post('http://localhost:3030/add-eg', {
+            //                     name: eG.name, 
+            //                     warranty: eG.warrantyPeriod, 
+            //                     unit: eG.unit, 
+            //                     batch: eG.batch, 
+            //                     rcpCode: rcp.rcp_code, 
+            //                     quantity: eG.quantity, 
+            //                     price: eG.price
+            //                 })
+            //             } catch (error) {
+            //                 alert(error.message)
+            //             }
+            //         })
+            //     } catch (error) {
+            //         alert(error.message)
+            //     }
+            // }
+            history.push('/receipt')
         } catch (error) {
             alert(error);
         }
@@ -105,14 +105,6 @@ const SupplierEdit = ({ receipt, suppliers, eGList, addEG, cleanEG, history, fet
                             )}
                         </Form.Control>
                     </Form.Group>
-                    <Form.Group controlId="rcp_code">
-                        <Form.Label>Mã phiếu</Form.Label>
-                        <Form.Control
-                            name="rcp_code"
-                            value={rcp.rcp_code}
-                            onChange={event => handleChange(event)}
-                        />
-                    </Form.Group>
                     <Form.Group controlId="rcp_date">
                         <Form.Label>Ngày nhập</Form.Label>
                         <Form.Control
@@ -122,7 +114,15 @@ const SupplierEdit = ({ receipt, suppliers, eGList, addEG, cleanEG, history, fet
                             onChange={event => handleChange(event)}
                         />
                     </Form.Group>
-                    <Button id="add-btn" type="button" onClick={() => onVisible()}>Thêm từ danh mục</Button>
+                    <Form.Group controlId="rcp_code">
+                        <Form.Label>Mã phiếu</Form.Label>
+                        <Form.Control
+                            name="rcp_code"
+                            value={rcp.rcp_code}
+                            onChange={event => handleChange(event)}
+                        />
+                    </Form.Group>
+                    {/* <Button id="add-btn" type="button" onClick={() => onVisible()}>Thêm từ danh mục</Button> */}
                     <Button
                         onClick={() => handleSubmit()} 
                         variant="primary" type="button">Lưu</Button>

@@ -9,41 +9,6 @@ const PORT  = process.PORT || 3030;
 app.use(express.json());
 app.use(cors());
 //app.use(userRouter);
-{
-// app.get('/test', async (req, res) => {
-//     try {
-//         const pool = await poolPromise;
-//         const result = await pool.request().query('select * from ACCOUNT', (err, accSet) => {
-//             if(err) {
-//                 console.log(err)
-//             } else {
-//                 const send_data = accSet.recordset;
-//                 res.json(send_data)
-//             }
-//         })
-//     } catch (error) {
-//         res.status(500).send(err.message)
-//     }
-// })
-
-// app.post('/test1', async (req, res) => {
-//     const { username, password, roles} = req.body;
-//     const arr = ["1", "2"]
-//     try {
-//         const pool = await poolPromise
-//         await arr.forEach(item => {
-//             pool.request()
-//             .input("username", sql.NVarChar(20), username.concat(item))
-//             .input("password", sql.NVarChar(20), password)
-//             .input("roles", sql.NVarChar(10), roles)
-//             .execute("InsertAccount")
-//         })
-//         return res.status(200).json({ message: "success insert"})
-//     } catch (error) {
-//         res.status(400).json({ message: "invalid" })
-//     }
-// })
-}
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
     try {
@@ -77,13 +42,14 @@ app.get('/fetch-suppliers', async (req, res) => {
 })
 
 app.post('/add-supplier', async (req, res) => {
-    const { address, name, taxId } = req.body
+    const { address, name, taxId, accountId } = req.body
     try {
         const pool = await poolPromise
         await pool.request()
             .input("ten", sql.NVarChar(50), name)
             .input("diachi", sql.NVarChar(50), address)
             .input("mathue", sql.NVarChar(20), taxId)
+            .input("account_id", sql.Int, accountId)
             .execute("InsertNcc").then(record => {
                 return res.status(200).json(record.recordset[0])
             }).catch(err => res.status(500).send(err.message))
@@ -93,7 +59,7 @@ app.post('/add-supplier', async (req, res) => {
 })
 
 app.post('/edit-supplier', async (req, res) => {
-    const { address, name, taxId, id } = req.body
+    const { address, name, taxId, id, accountId } = req.body
     try {
         const pool = await poolPromise
         await pool.request()
@@ -101,6 +67,7 @@ app.post('/edit-supplier', async (req, res) => {
             .input("tenncc", sql.NVarChar(50), name)
             .input("mathue", sql.NVarChar(20), taxId)
             .input("diachi", sql.NVarChar(50), address)
+            .input("account_id", sql.Int, accountId)
             .execute("EditNcc").then(record => {
                 return res.status(200).send('success')
             }).catch(err => res.status(500).send(err.message))
@@ -114,6 +81,7 @@ app.post('/delete-supplier', async (req, res) => {
         const pool = await poolPromise
         await pool.request()
             .input("id", sql.Int, req.body.id)
+            .input("account_id", sql.Int, req.body.accountId)
             .execute("DeleteNcc").then(record => {
                 return res.status(200).send('success')
             }).catch(err => res.status.send(err.message))
@@ -132,6 +100,7 @@ app.post('/add-receipt', async (req, res) => {
             .input("supplier_id", sql.Int, supplierId)
             .input("staff_id", sql.Int, staffId)
             .input("total", sql.Money, total)
+            .input("account_id", sql.Int, staffId)
             .execute("InsertReceipt").then(record => {
                 return res.status(200).json(record.recordset[0])
             }).catch(err => res.status(500).send(err.message))
@@ -153,11 +122,12 @@ app.get('/fetch-receipt', async (req, res) => {
 })
 
 app.post('/delete-receipt', async (req, res) => {
-    const { rcp_code } = req.body
+    const { rcp_code, accountId } = req.body
     try {
         const pool = await poolPromise
         await pool.request()
             .input("rcp_code", sql.NVarChar(20), rcp_code)
+            .input("account_id", sql.Int, accountId)
             .execute("DeleteReceipt").then(record => {
                 return res.status(200).send('success')
             }).catch(err => res.status(500).send(err.message))
@@ -177,6 +147,7 @@ app.post('/edit-receipt', async (req, res) => {
             .input("supplier_id", sql.Int, supplierId)
             .input("staff_id", sql.Int, staffId)
             .input("total", sql.Money, total)
+            .input("account_id", sql.Int, staffId)
             .execute("EditReceipt").then(record => {
                 return res.status(200).send('success')
             }).catch(err => res.status(500).send(err.message))
@@ -198,7 +169,7 @@ app.post('/add-eg', async (req, res) => {
             .input("quantity", sql.Int, quantity)
             .input("price", sql.Money, price)
             .execute("InsertEg").then(record => {
-                return res.status(200).send('success')
+                return res.status(200).json(record.recordset[0])
             }).catch(err => res.status(500).send(err.message))
     } catch (error) {
         return res.status(500).send(error.message)
@@ -231,10 +202,74 @@ app.post('/fetch-eg', async (req, res) => {
     }
 })
 
+app.post('/add-equipment', async (req, res) => {
+    try {
+        const pool = await poolPromise
+        await pool.request()
+            .input("eg_id", sql.Int, req.body.egId)
+            .execute("InsertEquipment").then(record => {
+                return res.status(200).send('success')
+            }).catch(err => res.status(500).send(err.message))
+    } catch (error) {
+        return res.status(500).send(error.message)
+    }
+})
 
+app.get('/fetch-equipments', async (req, res) => {
+    try {
+        const pool = await poolPromise
+        await pool.request()
+            .execute("GetEquipment").then(record => {
+                return res.status(200).json(record.recordset)
+            })
+    } catch (error) {
+        res.status(500).send(error.message)
+    }
+})
 
+app.post('/fetch-equipment', async (req, res) => {
+    try {
+        const pool = await poolPromise
+        await pool.request()
+            .input("id", sql.Int, req.body.id)
+            .execute("FetchEquipment").then(record => {
+                return res.status(200).json(record.recordset[0])
+            })
+    } catch (error) {
+        res.status(500).send(error.message)
+    }
+})
 
+app.post('/edit-equipment', async (req, res) => {
+    const { id, stateDes, des, accountId } = req.body
+    try {
+        const pool = await poolPromise
+        await pool.request()
+            .input("id", sql.Int, id)
+            .input("state_des", sql.NVarChar(20), stateDes)
+            .input("des", sql.NVarChar(50), des)
+            .input("account_id", sql.Int, accountId)
+            .execute("EditEquipment").then(record => {
+                return res.status(200).send("success")
+            })
+    } catch (error) {
+        res.status(500).send(error.message)
+    }
+})
 
+app.post('/fetch-record', async (req, res) => {
+    try {
+        const pool = await poolPromise
+        await pool.request()
+            .input("rol", sql.NVarChar(10), req.body.rol)
+            .execute("FetchRecord").then(record => {
+                if(!record.recordset[0].msg) return res.status(200).json(record.recordset)
+                return res.status(203).json(record.recordset)
+            })
+    } catch (error) {
+        res.status(500).send(error.message)
+    }
+})
 
 app.get('/', (req, res) => {
     res.send('<h1>SERVER RUN</h1>');

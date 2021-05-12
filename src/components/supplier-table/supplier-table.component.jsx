@@ -13,10 +13,11 @@ import "ka-table/style.css";
 
 
 
-const handleDel = async (id, delSupplier) => {
+const handleDel = async (id, delSupplier, accountId) => {
   try {
     const response = await axios.post('http://localhost:3030/delete-supplier', {
-      id: id
+      id: id,
+      accountId: accountId
     })
     if(response.status == 200) {
       delSupplier(id)
@@ -37,21 +38,21 @@ const EditButton = ({ rowData, history, match }) => {
    </div>
   );
 };
-const DeleteButton = ({ rowData, delSupplier }) => {
+const DeleteButton = ({ rowData, delSupplier, user }) => {
   return (
    <div className='edit-cell-button'>
      <img
       src='https://komarovalexander.github.io/ka-table/static/icons/delete.svg'
       alt='Delete Row'
       title='Delete Row'
-      onClick={() => handleDel(rowData.id, delSupplier)}
+      onClick={() => handleDel(rowData.id, delSupplier, user.id)}
     />
    </div>
   );
 };
 
 
-const SupplierTable = ({ suppliers, history, match, delSupplier }) => {
+const SupplierTable = ({ suppliers, history, match, delSupplier, user }) => {
   const dataArray = suppliers.map(
     (x, index) => ({
       order: `${index + 1}`,
@@ -59,6 +60,7 @@ const SupplierTable = ({ suppliers, history, match, delSupplier }) => {
       taxId: x.tax_id,
       address: x.address,
       des: 'không có',
+      passed: true,
       id: x.id,
     })
   );
@@ -110,7 +112,7 @@ const SupplierTable = ({ suppliers, history, match, delSupplier }) => {
               return <EditButton {...props} history={history} match={match}/>
             }
             if (props.column.key === 'deleteColumn'){
-              return <DeleteButton {...props} delSupplier={delSupplier} />
+              return <DeleteButton {...props} delSupplier={delSupplier} user={user}/>
             }
           }
         }
@@ -120,9 +122,13 @@ const SupplierTable = ({ suppliers, history, match, delSupplier }) => {
   );
 };
 
+const mapStateToProps =({ user }) => ({
+  user: user.currentUser
+})
+
 const mapDispatchToProps = dispatch => ({
   delSupplier: id => dispatch(deleteSupplier(id))
 })
 
 
-export default withRouter(connect(null, mapDispatchToProps)(SupplierTable));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(SupplierTable));

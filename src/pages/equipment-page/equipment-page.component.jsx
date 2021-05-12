@@ -1,9 +1,20 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
+import axios from 'axios';
 
+import { fetchEquips } from '../../redux/equipment/equipment.actions';
+ 
 import EquipTable from '../../components/equip-table/equip-table.component';
 
-const EquipmentPage = ({ equipment }) => {
+const EquipmentPage = ({ equipment, fetchEquip }) => {
+    useEffect(async () => {
+        try {
+            const equipment = await axios.get('http://localhost:3030/fetch-equipments')
+            fetchEquip(equipment.data)
+        } catch (error) {
+            alert(error);
+        }
+    }, [])
     return (
         <div>
             <h1>Equipments</h1>
@@ -16,4 +27,8 @@ const mapStateToProps = ({ equipment }) => ({
     equipment: equipment.equipList
 })
 
-export default connect(mapStateToProps)(EquipmentPage);
+const mapDispatchToProps = dispatch => ({
+    fetchEquip: equipments => dispatch(fetchEquips(equipments))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(EquipmentPage);

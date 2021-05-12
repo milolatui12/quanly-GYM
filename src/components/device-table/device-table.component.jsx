@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 import { deleteEquipmentGroup } from '../../redux/equipment-group/equipment-group.actions';
 
 import { Table, kaReducer } from 'ka-table';
 import { DataType, EditingMode, SortingMode, PagingPosition } from 'ka-table/enums';
-import { loadData } from 'ka-table/actionCreators';
+import { loadData, closeEditor, updateCellValue } from 'ka-table/actionCreators';
 
 import "ka-table/style.css";
 
@@ -21,8 +22,27 @@ const DeleteButton = ({ rowData, deleteEG }) => {
    </div>
   );
 };
+const CustomEditor = ({ column, rowKeyValue, dispatch, value, }) => {
+  const [editorValue, setValue] = useState(value);
+  console.log(value)
+  return (
+    <div className='custom-editor'>
+      <input
+        className='form-control'
+        type='text'
+        value={editorValue}
+        onChange={(event) => setValue(event.currentTarget.value)}/>
+      {/* <button className='custom-editor-button custom-editor-button-save'
+        onClick={() => {
+          dispatch(updateCellValue(rowKeyValue, column.key, editorValue));
+          close();
+        }}>Save</button>
+      <button className='custom-editor-button custom-editor-button-cancel' onClick={close}>Cancel</button> */}
+    </div>
+  );
+};
 
-const DeviceTable = ({ devices, deleteEG }) => {
+const DeviceTable = ({ devices, deleteEG, match }) => {
   const dataArray = devices.map(
     (x, index) => ({
       order: `${index + 1}`,
@@ -60,6 +80,10 @@ const DeviceTable = ({ devices, deleteEG }) => {
       position: PagingPosition.Bottom
     },
     data: dataArray,
+    editableCells: [{
+      columnKey: 'name',
+      rowKeyValue: 'id',
+    }],
     editingMode: EditingMode.None,
     rowKeyField: 'id',
     singleAction: loadData(),
@@ -80,14 +104,15 @@ const DeviceTable = ({ devices, deleteEG }) => {
   return (
     <Table
       {...tableProps}
+      
       childComponents={{
         cellText: {
           content: (props) => {
-            if (props.column.key === 'deleteColumn'){
+            if (props.column.key === 'deleteColumn' && match.path == '/receipt/adddevice'){
               return <DeleteButton {...props} deleteEG={deleteEG} />
             }
           }
-        }
+        },
       }}
       dispatch={dispatch}
     />
@@ -99,4 +124,4 @@ const mapDispatchToProps = dispatch => ({
   deleteEG: id => dispatch(deleteEquipmentGroup(id))
 })
 
-export default connect(null, mapDispatchToProps)(DeviceTable);
+export default withRouter(connect(null, mapDispatchToProps)(DeviceTable));

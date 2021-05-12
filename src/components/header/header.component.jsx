@@ -14,10 +14,10 @@ const Header = ({ signOut, user }) => {
             <div className="slice-bar">
                 <Menu>
                     <Link to="/">Home</Link>
-                    <Link to="/suppliers">Suppliers</Link>
-                    <Link to="/receipt">Receipt</Link>
-                    <Link to="/equipment">Equipment</Link>
-                    <Link to="/" onClick={() => signOut()}>Sign out</Link>
+                    <Link to="/suppliers">Nhà Cung Cấp</Link>
+                    <Link to="/receipt">Hóa Đơn</Link>
+                    <Link to="/equipment">Thiết bị</Link>
+                    <Link to="/" onClick={() => signOut()}>Đăng Xuất</Link>
                 </Menu>
                 <Link className="logo-container" to='/'>
                     <img  alt="Logo" width={70} height={55} />        

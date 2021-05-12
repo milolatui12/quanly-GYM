@@ -12,13 +12,14 @@ import { loadData } from 'ka-table/actionCreators';
 import "ka-table/style.css";
 
 
-const handleDel = async (id, delReceipt) => {
+const handleDel = async (rcp_code, delReceipt, accountId) => {
   try {
     const response = await axios.post('http://localhost:3030/delete-receipt', {
-      rcp_code: id
+      rcp_code: rcp_code,
+      accountId: accountId
     })
     if(response.status == 200) {
-      delReceipt(id)
+      delReceipt(rcp_code)
     }
   } catch (error) {
     alert(error);
@@ -37,20 +38,20 @@ const EditButton = ({ rowData, history, match }) => {
    </div>
   );
 };
-const DeleteButton = ({ rowData, delReceipt }) => {
+const DeleteButton = ({ rowData, delReceipt, user }) => {
   return (
    <div className='edit-cell-button'>
      <img
       src='https://komarovalexander.github.io/ka-table/static/icons/delete.svg'
       alt='Delete Row'
       title='Delete Row'
-      onClick={() => handleDel(rowData.rcp_code, delReceipt)}
+      onClick={() => handleDel(rowData.rcp_code, delReceipt, user.id)}
     />
    </div>
   );
 };
 
-const ReceiptTable = ({ receipts, history, match, delReceipt }) => {
+const ReceiptTable = ({ receipts, history, match, delReceipt, user }) => {
   const dataArray = receipts.map(
     (x, index) => ({
       column1: `${index + 1}`,
@@ -110,7 +111,7 @@ const ReceiptTable = ({ receipts, history, match, delReceipt }) => {
               return <EditButton {...props} history={history} match={match} />
             }
             if (props.column.key === 'deleteColumn'){
-              return <DeleteButton {...props} delReceipt={delReceipt} />
+              return <DeleteButton {...props} delReceipt={delReceipt} user={user} />
             }
           }
         }
@@ -120,9 +121,13 @@ const ReceiptTable = ({ receipts, history, match, delReceipt }) => {
   );
 };
 
+const mapStateToProps =({ user }) => ({
+  user: user.currentUser
+})
+
 
 const mapDispatchToProps = dispatch => ({
   delReceipt: id => dispatch(deleteReceipt(id))
 })
 
-export default withRouter(connect(null, mapDispatchToProps)(ReceiptTable));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ReceiptTable));

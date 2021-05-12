@@ -33,14 +33,12 @@ const AddDevicePage = ({ suppliers, eGList, addEG, cleanEG, addRcp, history, sta
                 staffId: staffId,
                 total: total
             })
-            console.log(response.data)
             if(response.status === 200) {
                 addRcp({
                     ...response.data,
                     equipments: [...eGList],
                     rcp_date: response.data.rcp_date.slice(0, 10)
                 })
-
                 eGList.forEach(async eG => {
                     try {
                         const res = await axios.post('http://localhost:3030/add-eg', {
@@ -52,6 +50,15 @@ const AddDevicePage = ({ suppliers, eGList, addEG, cleanEG, addRcp, history, sta
                             quantity: eG.quantity, 
                             price: eG.price
                         })
+                        for(let i = 1; i <= eG.quantity; i++) {
+                            try {
+                                await axios.post('http://localhost:3030/add-equipment', {
+                                    egId: res.data.id
+                                })
+                            } catch (error) {
+                                alert(error.message)
+                            }
+                        }
                     } catch (error) {
                         alert(error.message)
                     }

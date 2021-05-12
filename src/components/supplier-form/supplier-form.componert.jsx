@@ -10,15 +10,15 @@ import { addSupplier } from '../../redux/supplier/supplier.actions';
 
 import 'rodal/lib/rodal.css';
 
-const SupplierForm = ({ visible, onVisible, addSupplier }) => {
+const SupplierForm = ({ visible, onVisible, addSupplier, user }) => {
     const { register, handleSubmit, errors, reset } = useForm();
-
     const onSubmit = async (data) => {
         try {
             const response = await axios.post('http://localhost:3030/add-supplier', {
                 address: data.address,
                 name: data.name,
-                taxId: data.tax_num
+                taxId: data.tax_num, 
+                accountId: user.id
             })
             addSupplier({
                 ...response.data
@@ -104,8 +104,12 @@ const SupplierForm = ({ visible, onVisible, addSupplier }) => {
     )
 }
 
+const mapStateToProps =({ user }) => ({
+    user: user.currentUser
+})
+
 const mapDispatchToProps = dispatch => ({
     addSupplier: supplier => dispatch(addSupplier(supplier))
 })
 
-export default connect(null, mapDispatchToProps)(SupplierForm);
+export default connect(mapStateToProps, mapDispatchToProps)(SupplierForm);

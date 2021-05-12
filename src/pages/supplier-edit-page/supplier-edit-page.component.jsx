@@ -7,7 +7,7 @@ import axios from 'axios';
 import { selectSupplier } from '../../redux/supplier/supplier.selectors';
 import { updateSupplier } from '../../redux/supplier/supplier.actions';
 
-const SupplierEdit = ({ supplier, updateSupplier, history }) => {
+const SupplierEdit = ({ supplier, updateSupplier, history, user }) => {
     const [supp, setSupplier] = useState({
         name: supplier.supplier.name,
         address: supplier.supplier.address,
@@ -26,7 +26,8 @@ const SupplierEdit = ({ supplier, updateSupplier, history }) => {
                 address: supp.address,
                 name: supp.name,
                 taxId: supp.tax_id,
-                id: id
+                id: id,
+                accountId: user.id
             })
             if(respone.status == 200) {
                 updateSupplier(supplier.index, supp)
@@ -74,7 +75,8 @@ const SupplierEdit = ({ supplier, updateSupplier, history }) => {
 }
 
 const mapStateToProps = (state, ownProps) => ({
-    supplier: selectSupplier(ownProps.match.params.suppId)(state)
+    supplier: selectSupplier(ownProps.match.params.suppId)(state),
+    user: state.user.currentUser
 })
 
 const mapDispatchToProps = dispatch => ({

@@ -9,6 +9,7 @@ import AddDevicePage from '../add-device-page/add-device-page.component';
 import EquipmentPage from '../equipment-page/equipment-page.component';
 import SupplierEdit from '../supplier-edit-page/supplier-edit-page.component';
 import ReceiptEdit from '../receipt-edit-page/receipt-edit-page.component';
+import EquipmentEdit from '../equipment-edit-page/equipment-edit-page.component';
 
 const MainProcessPage = () => {
     return (
@@ -23,6 +24,7 @@ const MainProcessPage = () => {
               <Route exact path="/equipment" component={EquipmentPage} />
               <Route path="/suppliers/:suppId" component={SupplierEdit} />
               <Route path="/receipt/:rcpId" component={ReceiptEdit} />
+              <Route path="/equipment/:equipId" component={EquipmentEdit} />
             </Switch>
         </div>
       </BrowserRouter>
