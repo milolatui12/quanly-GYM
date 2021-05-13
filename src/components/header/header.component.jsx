@@ -13,11 +13,11 @@ const Header = ({ signOut, user }) => {
         <div className="header">
             <div className="slice-bar">
                 <Menu>
-                    <Link to="/">Home</Link>
-                    <Link to="/suppliers">Nhà Cung Cấp</Link>
-                    <Link to="/receipt">Hóa Đơn</Link>
+                    <Link to="/">Thống kê</Link>
+                    <Link to="/suppliers">Nhà cung cấp</Link>
+                    <Link to="/receipt">Hóa đơn</Link>
                     <Link to="/equipment">Thiết bị</Link>
-                    <Link to="/" onClick={() => signOut()}>Đăng Xuất</Link>
+                    <Link to="/" onClick={() => signOut()}>Đăng xuất</Link>
                 </Menu>
                 <Link className="logo-container" to='/'>
                     <img  alt="Logo" width={70} height={55} />        

@@ -22,6 +22,7 @@ const SupplierPage = ({ supplierList }) => {
 
     return (
         <div className="suppliers-container">
+            <h1>Nhà cung cấp</h1>
             <Button id="suppliers-btn" onClick={() => onVisible()}>Thêm</Button>
             <SupplierTable suppliers={supplierList} />
             <SupplierForm visible={visible} onVisible={onVisible} />

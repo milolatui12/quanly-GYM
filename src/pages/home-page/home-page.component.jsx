@@ -4,20 +4,27 @@ import axios from 'axios';
 import { Form, Button } from 'react-bootstrap';
 
 import RecordTable from '../../components/record-table/record-table.component';
+import RecordStateTable from '../../components/state-table/state-table.component';
 
 
 
 import './homepage.styles.scss';
 
 const HomePage = ({ user }) => {
-    const [records, setRecords] = useState([])
+    const [staffRecords, setStaffRecords] = useState([])
+    const [stateRecords, setStateRecords] = useState([])
+    const [btnState, setBtn] = useState('staff');
     useEffect(async () => {
         try {
             const record = await axios.post('http://localhost:3030/fetch-record', {
                 rol: user.rol
             })
-            if(record.status == 200) return setRecords([...record.data])
-            setRecords(undefined)
+            const stateRecord = await axios.post('http://localhost:3030/fetch-state', {
+                rol: user.rol
+            })
+
+            setStaffRecords([...record.data])
+            setStateRecords([...stateRecord.data])
         } catch (error) {
             alert(error);
         }
@@ -25,17 +32,30 @@ const HomePage = ({ user }) => {
     const handleClick = () => {
         alert('PRINTING')
     }
+    const handleChange = event => {
+        setBtn(event.target.name)
+    }
+    
     return (
         <div className="homepage">
             {
-                (records)?
+                (user.rol == 'admin')?
                 <div>
-                    <Button type="button" onClick={() => handleClick()}>In</Button>
-                    <RecordTable records={records}/>
+                    <div className="btn-group">
+                        <Button className={`${btnState == 'staff'? "chose": ""}`} type="button" name="staff" onClick={(e) => handleChange(e)}>Nhân viên</Button>
+                        <Button className={`${btnState == 'equip'? "chose": ""}`} type="button" name="equip" onClick={(e) => handleChange(e)}>Thiết bị</Button>
+                    </div>
+                    {
+                        btnState == 'staff'?
+                        <RecordTable records={staffRecords}/>:
+                        <RecordStateTable records={stateRecords}/>
+                        
+                    }
+                    <Button>In</Button>
                 </div>
                 : 
-                "No permission"
-            }
+                "Không có quyền thực hiện hành động này"
+            }    
         </div>
     )
 }

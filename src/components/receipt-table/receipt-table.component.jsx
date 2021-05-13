@@ -5,6 +5,7 @@ import axios from 'axios';
 
 import { deleteReceipt } from '../../redux/receipt/receipt.actions';
 
+import { search } from 'ka-table/actionCreators';
 import { Table, kaReducer } from 'ka-table';
 import { DataType, EditingMode, SortingMode, PagingPosition } from 'ka-table/enums';
 import { loadData } from 'ka-table/actionCreators';
@@ -22,7 +23,7 @@ const handleDel = async (rcp_code, delReceipt, accountId) => {
       delReceipt(rcp_code)
     }
   } catch (error) {
-    alert(error);
+    alert("Không xóa được hóa đơn");
   }
 }
 
@@ -68,7 +69,7 @@ const ReceiptTable = ({ receipts, history, match, delReceipt, user }) => {
     columns: [
       { key: 'column1', title: 'STT', dataType: DataType.Number, style: {width: 50} },
       { key: 'rcp_code', title: 'MÃ PHIẾU', dataType: DataType.String, style: {width: 150} },
-      { key: 'column3', title: 'NGÀY NHẬP', dataType: DataType.String, style: {width: 100} },
+      { key: 'column3', title: 'NGÀY NHẬP', dataType: DataType.Date, style: {width: 100} },
       { key: 'column4', title: 'NHÀ CUNG CẤP', dataType: DataType.String, style: {width: 300} },
       { key: 'column5', title: 'TỔNG TIỀN', dataType: DataType.String, style: {width: 200} },
       { key: 'editColumn', title: '',  style: {width: 50, cursor: "pointer"}},
@@ -82,6 +83,11 @@ const ReceiptTable = ({ receipts, history, match, delReceipt, user }) => {
       pageIndex: 0,
       pageSize: 10, 
       position: PagingPosition.Bottom
+    },
+    format: ({ column, value }) => {
+      if (column.dataType === DataType.Date){
+        return value && value.toLocaleDateString('en-GB', {month: '2-digit', day: '2-digit', year: 'numeric' });
+      }
     },
     data: dataArray,
     editingMode: EditingMode.None,
@@ -102,22 +108,30 @@ const ReceiptTable = ({ receipts, history, match, delReceipt, user }) => {
     changeTableProps((prevState) => kaReducer(prevState, action));
   }
   return (
-    <Table
-      {...tableProps}
-      childComponents={{
-        cellText: {
-          content: (props) => {
-            if (props.column.key === 'editColumn'){
-              return <EditButton {...props} history={history} match={match} />
+    <div>
+      <input type='search' defaultValue={tableProps.searchText} onChange={(event) => {
+        dispatch(search(event.currentTarget.value));
+      }} className='top-element' placeholder="tìm kiếm"/>
+      <Table
+        {...tableProps}
+        childComponents={{
+          cellText: {
+            content: (props) => {
+              if (props.column.key === 'editColumn'){
+                return <EditButton {...props} history={history} match={match} />
+              }
+              if (props.column.key === 'deleteColumn'){
+                return <DeleteButton {...props} delReceipt={delReceipt} user={user} />
+              }
             }
-            if (props.column.key === 'deleteColumn'){
-              return <DeleteButton {...props} delReceipt={delReceipt} user={user} />
-            }
+          },
+          noDataRow: {
+            content: () => 'No Data Found'
           }
-        }
-      }}
-      dispatch={dispatch}
-    />
+        }}
+        dispatch={dispatch}
+      />
+    </div>
   );
 };
 

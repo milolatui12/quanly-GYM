@@ -6,6 +6,8 @@ import { fetchEquips } from '../../redux/equipment/equipment.actions';
  
 import EquipTable from '../../components/equip-table/equip-table.component';
 
+import "./equipment-page.styles.scss";
+
 const EquipmentPage = ({ equipment, fetchEquip }) => {
     useEffect(async () => {
         try {
@@ -16,8 +18,8 @@ const EquipmentPage = ({ equipment, fetchEquip }) => {
         }
     }, [])
     return (
-        <div>
-            <h1>Equipments</h1>
+        <div className="suppliers-container">
+            <h1>Thiết bị</h1>
             <EquipTable equips={equipment} />
         </div>
     )

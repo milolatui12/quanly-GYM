@@ -21,6 +21,7 @@ const ReceiptPage = ({ history, match, receipts, fetchReceipts }) => {
     }, [])
     return (
         <div className="device-container">
+            <h1>Hóa đơn</h1>
             <CustomButton id="device-btn" onClick={() => history.push(`${match.url}/adddevice`)}>Thêm</CustomButton>
             <ReceiptTable receipts={receipts}/>
         </div>

@@ -3,10 +3,12 @@ import { withRouter } from 'react-router-dom';
 import axios from 'axios';
 
 import { Table, kaReducer } from 'ka-table';
+import { search } from 'ka-table/actionCreators';
 import { DataType, EditingMode, SortingMode, PagingPosition } from 'ka-table/enums';
 import { loadData } from 'ka-table/actionCreators';
 
 import "ka-table/style.css";
+import "./equip-table.styles.scss";
 
 
 const handleDel = async (rcp_code, delReceipt) => {
@@ -101,22 +103,30 @@ const EquipTable = ({ equips, history, match }) => {
     changeTableProps((prevState) => kaReducer(prevState, action));
   }
   return (
-    <Table
-      {...tableProps} 
-      dispatch={dispatch}
-      childComponents={{
-        cellText: {
-          content: (props) => {
-            if (props.column.key === 'editColumn'){
-              return <EditButton {...props} history={history} match={match} />
+    <div>
+      <input type='search' defaultValue={tableProps.searchText} onChange={(event) => {
+        dispatch(search(event.currentTarget.value));
+      }} className='top-element' placeholder="tìm kiếm"/>
+      <Table
+        {...tableProps} 
+        dispatch={dispatch}
+        childComponents={{
+          cellText: {
+            content: (props) => {
+              if (props.column.key === 'editColumn'){
+                return <EditButton {...props} history={history} match={match} />
+              }
+              // if (props.column.key === 'deleteColumn'){
+              //   return <DeleteButton {...props} delReceipt={delReceipt} />
+              // }
             }
-            // if (props.column.key === 'deleteColumn'){
-            //   return <DeleteButton {...props} delReceipt={delReceipt} />
-            // }
+          },
+          noDataRow: {
+            content: () => 'No Data Found'
           }
-        }
-      }}
-    />
+        }}
+      />
+    </div>
   );
 };
 

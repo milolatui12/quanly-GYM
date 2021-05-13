@@ -264,12 +264,27 @@ app.post('/fetch-record', async (req, res) => {
             .input("rol", sql.NVarChar(10), req.body.rol)
             .execute("FetchRecord").then(record => {
                 if(!record.recordset[0].msg) return res.status(200).json(record.recordset)
-                return res.status(203).json(record.recordset)
+                return res.status(200).json(record.recordset)
             })
     } catch (error) {
         res.status(500).send(error.message)
     }
 })
+
+app.post('/fetch-state', async (req, res) => {
+    try {
+        const pool = await poolPromise
+        await pool.request()
+            .input("rol", sql.NVarChar(10), req.body.rol)
+            .execute("GetStateRecord").then(record => {
+                if(!record.recordset[0].msg) return res.status(200).json(record.recordset)
+                return res.status(200).json(record.recordset)
+            })
+    } catch (error) {
+        res.status(500).send(error.message)
+    }
+})
+
 
 app.get('/', (req, res) => {
     res.send('<h1>SERVER RUN</h1>');

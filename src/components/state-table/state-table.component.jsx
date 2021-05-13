@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { Form, Button, InputGroup } from 'react-bootstrap';
 
 import { search } from 'ka-table/actionCreators';
 import { Table, kaReducer } from 'ka-table';
@@ -10,14 +11,14 @@ import { loadData } from 'ka-table/actionCreators';
 
 import "ka-table/style.css";
 
-const RecordTable = ({ records }) => {
+const RecordStateTable = ({ records }) => {
   const dataArray = records.map(
     (x, index) => ({
       order: `${index + 1}`,
-      staffName: x.staff_name,
-      staffId: x.staff_id,
-      act: x.act,
-      date: x.record_date.slice(0, 19).replace(/T/gi, " "),
+      name: x.eg_name,
+      state_des: x.state_des,
+      des: x.des,
+      date: x.state_date.slice(0, 19).replace(/T/gi, " "),
       id: x.id,
     })
   );
@@ -25,10 +26,10 @@ const RecordTable = ({ records }) => {
   const tablePropsInit = {
     columns: [
       { key: 'order', title: 'STT', dataType: DataType.Number, style: {width: 50} },
-      { key: 'staffName', title: 'TÊN NHÂN VIÊN', dataType: DataType.String, style: {width: 200} },
-      { key: 'staffId', title: 'MÃ NHÂN VIÊN', dataType: DataType.String, style: {width: 150} },
-      { key: 'act', title: 'HÀNH ĐỘNG', dataType: DataType.String, style: {width: 150} },
-      { key: 'date', title: 'NGÀY', dataType: DataType.Date, style: {width: 200} }
+      { key: 'name', title: 'TÊN THIẾT BỊ', dataType: DataType.String, style: {width: 200} },
+      { key: 'state_des', title: 'TÌNH TRẠNG', dataType: DataType.String, style: {width: 150} },
+      { key: 'des', title: 'MÔ TẢ', dataType: DataType.String, style: {width: 150} },
+      { key: 'date', title: 'NGÀY CHỈNH SỬA', dataType: DataType.Date, style: {width: 200} }
     ],
     loading: {
       enabled: false
@@ -66,7 +67,7 @@ const RecordTable = ({ records }) => {
     <div>
       <input type='search' defaultValue={tableProps.searchText} onChange={(event) => {
         dispatch(search(event.currentTarget.value));
-      }} className='top-element' placeholder="tìm kiếm"/>
+      }} className='top-element form-control' placeholder="tìm kiếm"/>
       <Table
         {...tableProps}
         dispatch={dispatch}
@@ -84,4 +85,4 @@ const mapStateToProps =({ user }) => ({
   user: user.currentUser
 })
 
-export default withRouter(connect(mapStateToProps)(RecordTable));
+export default withRouter(connect(mapStateToProps)(RecordStateTable));
