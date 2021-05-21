@@ -6,15 +6,15 @@ import { deleteEquipmentGroup } from '../../redux/equipment-group/equipment-grou
 
 import { Table, kaReducer } from 'ka-table';
 import { DataType, EditingMode, SortingMode, PagingPosition } from 'ka-table/enums';
-import { loadData, closeEditor, updateCellValue } from 'ka-table/actionCreators';
+import { loadData } from 'ka-table/actionCreators';
 
+import { RiDeleteBin2Fill } from 'react-icons/ri';
 import "ka-table/style.css";
 
 const DeleteButton = ({ rowData, deleteEG }) => {
   return (
    <div className='edit-cell-button'>
-     <img
-      src='https://komarovalexander.github.io/ka-table/static/icons/delete.svg'
+     <RiDeleteBin2Fill
       alt='Delete Row'
       title='Delete Row'
       onClick={() => deleteEG(rowData.id)}

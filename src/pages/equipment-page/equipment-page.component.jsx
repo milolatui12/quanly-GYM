@@ -18,8 +18,8 @@ const EquipmentPage = ({ equipment, fetchEquip }) => {
         }
     }, [])
     return (
-        <div className="suppliers-container">
-            <h1>Thiết bị</h1>
+        <div className="equipment-container page">
+            <h1 className="tb" >Thiết bị</h1>
             <EquipTable equips={equipment} />
         </div>
     )

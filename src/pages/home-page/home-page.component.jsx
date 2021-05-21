@@ -19,11 +19,10 @@ const HomePage = ({ user }) => {
             const record = await axios.post('http://localhost:3030/fetch-record', {
                 rol: user.rol
             })
+            setStaffRecords([...record.data])
             const stateRecord = await axios.post('http://localhost:3030/fetch-state', {
                 rol: user.rol
             })
-
-            setStaffRecords([...record.data])
             setStateRecords([...stateRecord.data])
         } catch (error) {
             alert(error);
@@ -35,15 +34,15 @@ const HomePage = ({ user }) => {
     const handleChange = event => {
         setBtn(event.target.name)
     }
-    
     return (
-        <div className="homepage">
+        <div className="homepage page">
             {
                 (user.rol == 'admin')?
                 <div>
                     <div className="btn-group">
                         <Button className={`${btnState == 'staff'? "chose": ""}`} type="button" name="staff" onClick={(e) => handleChange(e)}>Nhân viên</Button>
                         <Button className={`${btnState == 'equip'? "chose": ""}`} type="button" name="equip" onClick={(e) => handleChange(e)}>Thiết bị</Button>
+                        <Button className={`${btnState == 'supp'? "chose": ""}`} type="button" name="supp" onClick={(e) => handleChange(e)}>NCC</Button>
                     </div>
                     {
                         btnState == 'staff'?
@@ -51,10 +50,9 @@ const HomePage = ({ user }) => {
                         <RecordStateTable records={stateRecords}/>
                         
                     }
-                    <Button>In</Button>
                 </div>
                 : 
-                "Không có quyền thực hiện hành động này"
+                <h1>Không có quyền thực hiện hành động này</h1>
             }    
         </div>
     )

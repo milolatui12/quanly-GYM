@@ -1,4 +1,5 @@
 import './App.css';
+import { Router } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import MainProcessPage from './pages/main-process-page/main-process-page.component';
@@ -11,6 +12,7 @@ const App = ({ currentUser }) =>  {
         currentUser?
         <MainProcessPage />:
         <LoginPage />
+        
       }
     </div>
   );

@@ -1,4 +1,5 @@
 import EquipmentActionTypes from './equipment.types';
+import { deleteEquip, fetchEquip } from './equipment.utils';
 
 const INTIAL_STATE = {
     equipList: []
@@ -9,12 +10,17 @@ const equipmentReducer = (state = INTIAL_STATE, action) => {
         case EquipmentActionTypes.FETCH_EQUIPS:
             return {
                 ...state,
-                equipList: [...action.payload]
+                equipList: fetchEquip(action.payload)
             }
         case EquipmentActionTypes.ADD_EQUIP:
             return {
                 ...state,
                 equipList: [...state.equipList, action.payload]
+            }
+        case EquipmentActionTypes.DELETE_EQUIP:
+            return {
+                ...state,
+                equipList: deleteEquip(state.equipList, action.payload)
             }
         default:
             return state;

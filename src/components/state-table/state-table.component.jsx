@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import { Form, Button, InputGroup } from 'react-bootstrap';
 
 import { search } from 'ka-table/actionCreators';
+import DatePicker from '../date-picker/date-picker.component';
+
 import { Table, kaReducer } from 'ka-table';
 import { DataType, EditingMode, SortingMode, PagingPosition } from 'ka-table/enums';
 import { loadData } from 'ka-table/actionCreators';
@@ -12,14 +14,22 @@ import { loadData } from 'ka-table/actionCreators';
 import "ka-table/style.css";
 
 const RecordStateTable = ({ records }) => {
-  const dataArray = records.map(
+  const now = new Date
+  const [fDate, setDate] = useState({ start: '', end: now.toDateString()})
+  const handleChange = event => {
+    const { value, name } = event.target;
+
+    setDate({ ...fDate, [name]: value });
+  }
+  const dataArray = records.filter(x => x.state_date >= fDate.start && x.state_date <= fDate.end).map(
     (x, index) => ({
       order: `${index + 1}`,
       name: x.eg_name,
       state_des: x.state_des,
-      des: x.des,
+      act: x.act,
       date: x.state_date.slice(0, 19).replace(/T/gi, " "),
-      id: x.id,
+      equip_id: x.equip_id,
+      id: index,
     })
   );
 
@@ -27,8 +37,9 @@ const RecordStateTable = ({ records }) => {
     columns: [
       { key: 'order', title: 'STT', dataType: DataType.Number, style: {width: 50} },
       { key: 'name', title: 'TÊN THIẾT BỊ', dataType: DataType.String, style: {width: 200} },
+      { key: 'equip_id', title: 'ID THIẾT BỊ', dataType: DataType.String, style: {width: 150} },
       { key: 'state_des', title: 'TÌNH TRẠNG', dataType: DataType.String, style: {width: 150} },
-      { key: 'des', title: 'MÔ TẢ', dataType: DataType.String, style: {width: 150} },
+      { key: 'act', title: 'HÀNH ĐỘNG', dataType: DataType.String, style: {width: 150} },
       { key: 'date', title: 'NGÀY CHỈNH SỬA', dataType: DataType.Date, style: {width: 200} }
     ],
     loading: {
@@ -58,16 +69,19 @@ const RecordStateTable = ({ records }) => {
       data: dataArray,
       loading: true
     })   
-  }, [records])
+  }, [records, fDate])
   const dispatch = action => {
     changeTableProps(prevState => kaReducer(prevState, action));
   };
 
   return (
     <div>
-      <input type='search' defaultValue={tableProps.searchText} onChange={(event) => {
-        dispatch(search(event.currentTarget.value));
-      }} className='top-element form-control' placeholder="tìm kiếm"/>
+      <div className="search-filter">
+        <DatePicker value={fDate} name="start" handleChange={handleChange} />
+        <input type='search' defaultValue={tableProps.searchText} onChange={(event) => {
+          dispatch(search(event.currentTarget.value));
+        }} className='search' placeholder="tìm kiếm"/>
+      </div>
       <Table
         {...tableProps}
         dispatch={dispatch}

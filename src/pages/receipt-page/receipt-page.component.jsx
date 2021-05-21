@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import axios from 'axios';
+import { Button } from 'react-bootstrap';
 
 import ReceiptTable from '../../components/receipt-table/receipt-table.component';
 import CustomButton from '../../components/custom-button/custom-button.component';
@@ -20,9 +21,9 @@ const ReceiptPage = ({ history, match, receipts, fetchReceipts }) => {
         }
     }, [])
     return (
-        <div className="device-container">
+        <div className="device-container page">
             <h1>Hóa đơn</h1>
-            <CustomButton id="device-btn" onClick={() => history.push(`${match.url}/adddevice`)}>Thêm</CustomButton>
+            <Button id="device-btn" onClick={() => history.push(`${match.url}/adddevice`)}>Thêm</Button>
             <ReceiptTable receipts={receipts}/>
         </div>
     )

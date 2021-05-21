@@ -89,7 +89,7 @@ const SupplierEdit = ({ receipt, suppliers, eGList, addEG, cleanEG, history, fet
         }
     }
     return (
-        <div className="container-add-page">
+        <div className="container-add-page page">
             <Form>
                 <div className="headerr">
                     <Form.Group controlId="name">

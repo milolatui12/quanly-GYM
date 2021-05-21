@@ -9,59 +9,45 @@ import { DataType, EditingMode, SortingMode, PagingPosition } from 'ka-table/enu
 import { loadData } from 'ka-table/actionCreators';
 
 import { deleteSupplier } from '../../redux/supplier/supplier.actions';
-
-import { RiEdit2Fill, RiDeleteBin2Fill } from 'react-icons/ri';
+import { BiReset } from 'react-icons/bi';
 
 import "ka-table/style.css";
 
-
-
-const handleDel = async (id, delSupplier, accountId) => {
+const handleReset = async (rowData, user) => {
   try {
-    const response = await axios.post('http://localhost:3030/delete-supplier', {
-      id: id,
-      accountId: accountId
+    await axios.post('http://localhost:3030/reset-password', {
+        role: user.rol,
+        id: rowData.id,
+        accountId: user.id
     })
-    if(response.status == 200) {
-      delSupplier(id)
-    }
+    alert("Đặt lại thành công")
   } catch (error) {
-    alert(error);
+      alert(error);
   }
 }
-const EditButton = ({ rowData, history, match }) => {
+
+const ResetButton = ({ rowData, user }) => {
   return (
    <div className='edit-cell-button'>
-     <RiEdit2Fill
+     <BiReset
       alt='Edit Row'
       title='Edit Row'
-      onClick={() => history.push(`${match.url}/${rowData.id}`)}
-    />
-   </div>
-  );
-};
-const DeleteButton = ({ rowData, delSupplier, user }) => {
-  return (
-   <div className='edit-cell-button'>
-     <RiDeleteBin2Fill
-      alt='Delete Row'
-      title='Delete Row'
-      onClick={() => handleDel(rowData.id, delSupplier, user.id)}
+      onClick={() => handleReset(rowData, user)}
     />
    </div>
   );
 };
 
-
-const SupplierTable = ({ suppliers, history, match, delSupplier, user }) => {
-  const dataArray = suppliers.map(
+const AccountTable = ({ accounts, history, match, user }) => {
+  console.log(accounts)
+  const dataArray = accounts.map(
     (x, index) => ({
       order: `${index + 1}`,
-      name: x.name,
-      taxId: x.tax_id,
-      address: x.address,
-      des: 'không có',
-      passed: true,
+      username: x.username,
+      idCode: x.staff_code,
+      name: `${x.last_name}  ${x.first_name}`,
+      birthDate: x.birth_date,
+      role: x.rol,
       id: x.id,
     })
   );
@@ -69,12 +55,12 @@ const SupplierTable = ({ suppliers, history, match, delSupplier, user }) => {
   const tablePropsInit = {
     columns: [
       { key: 'order', title: 'STT', dataType: DataType.Number, style: {width: 50} },
-      { key: 'name', title: 'TÊN NHÀ CUNG CẤP', dataType: DataType.String, style: {width: 300} },
-      { key: 'taxId', title: 'MÃ SỐ THUẾ', dataType: DataType.String, style: {width: 100} },
-      { key: 'address', title: 'ĐỊA CHỈ', dataType: DataType.String, style: {width: 300} },
-      //{ key: 'des', title: 'THÔNG TIN', dataType: DataType.String, style: {width: 200} },
-      { key: 'editColumn', title: '',  style: {width: 50, cursor: "pointer"}},
-      { key: 'deleteColumn', title: '',  style: {width: 50, cursor: "pointer"}},
+      { key: 'username', title: 'TÊN ĐĂNG NHẬP', dataType: DataType.String, style: {width: 200} },
+      { key: 'idCode', title: 'CMND', dataType: DataType.String, style: {width: 200} },
+      { key: 'name', title: 'TÊN NHÂN VIÊN', dataType: DataType.String, style: {width: 250} },
+      { key: 'birthDate', title: 'NGÀY SINH', dataType: DataType.Date, style: {width: 200} },
+      { key: 'role', title: 'QUYỀN', dataType: DataType.String, style: {width: 100} },
+      { key: 'resetColumn', title: '',  style: {width: 50, cursor: "pointer"}},
     ],
     loading: {
       enabled: false
@@ -83,6 +69,11 @@ const SupplierTable = ({ suppliers, history, match, delSupplier, user }) => {
       enabled: true,
       pageSize: 10, 
       position: PagingPosition.Bottom
+    },
+    format: ({ column, value }) => {
+        if (column.dataType === DataType.Date){
+          return value && value.toLocaleDateString('en-GB', {month: '2-digit', day: '2-digit', year: 'numeric' });
+        }
     },
     data: dataArray,
     editingMode: EditingMode.None,
@@ -98,7 +89,7 @@ const SupplierTable = ({ suppliers, history, match, delSupplier, user }) => {
       data: dataArray,
       loading: true
     })   
-  }, [suppliers])
+  }, [accounts])
   const dispatch = action => {
     changeTableProps(prevState => kaReducer(prevState, action));
   };
@@ -113,12 +104,12 @@ const SupplierTable = ({ suppliers, history, match, delSupplier, user }) => {
         childComponents={{
           cellText: {
             content: (props) => {
-              if (props.column.key === 'editColumn'){
-                return <EditButton {...props} history={history} match={match}/>
+              if (props.column.key === 'resetColumn'){
+                return <ResetButton {...props} user={user}/>
               }
-              if (props.column.key === 'deleteColumn'){
-                return <DeleteButton {...props} delSupplier={delSupplier} user={user}/>
-              }
+              // if (props.column.key === 'deleteColumn'){
+              //   return <DeleteButton {...props} delSupplier={delSupplier} user={user}/>
+              // }
             }
           },
           noDataRow: {
@@ -140,4 +131,4 @@ const mapDispatchToProps = dispatch => ({
 })
 
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(SupplierTable));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AccountTable));

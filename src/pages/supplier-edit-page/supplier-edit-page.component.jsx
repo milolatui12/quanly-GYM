@@ -38,7 +38,7 @@ const SupplierEdit = ({ supplier, updateSupplier, history, user }) => {
         }
     }
     return (
-        <div>
+        <div className="page">
             <Form className="input-form">
                 <div className="col-l-9 offset-md-1">
                     <Form.Group controlId="tax_id">

@@ -9,3 +9,8 @@ export const addEquip = equip => ({
     type: EquipmentActionTypes.ADD_EQUIP,
     payload: equip
 })
+
+export const deleteEquip = id => ({
+    type: EquipmentActionTypes.DELETE_EQUIP,
+    payload: id
+})

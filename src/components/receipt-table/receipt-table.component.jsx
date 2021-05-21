@@ -4,12 +4,15 @@ import { withRouter } from 'react-router-dom';
 import axios from 'axios';
 
 import { deleteReceipt } from '../../redux/receipt/receipt.actions';
+import DatePicker from '../date-picker/date-picker.component';
+import Confirm from '../confirm/confirm.component';
 
 import { search } from 'ka-table/actionCreators';
 import { Table, kaReducer } from 'ka-table';
 import { DataType, EditingMode, SortingMode, PagingPosition } from 'ka-table/enums';
 import { loadData } from 'ka-table/actionCreators';
 
+import { RiEdit2Fill, RiDeleteBin2Fill } from 'react-icons/ri';
 import "ka-table/style.css";
 
 
@@ -30,8 +33,7 @@ const handleDel = async (rcp_code, delReceipt, accountId) => {
 const EditButton = ({ rowData, history, match }) => {
   return (
    <div className='edit-cell-button'>
-     <img
-      src='https://komarovalexander.github.io/ka-table/static/icons/edit.svg'
+     <RiEdit2Fill
       alt='Edit Row'
       title='Edit Row'
       onClick={() => history.push(`${match.url}/${rowData.id}`)}
@@ -42,8 +44,7 @@ const EditButton = ({ rowData, history, match }) => {
 const DeleteButton = ({ rowData, delReceipt, user }) => {
   return (
    <div className='edit-cell-button'>
-     <img
-      src='https://komarovalexander.github.io/ka-table/static/icons/delete.svg'
+     <RiDeleteBin2Fill
       alt='Delete Row'
       title='Delete Row'
       onClick={() => handleDel(rowData.rcp_code, delReceipt, user.id)}
@@ -53,7 +54,13 @@ const DeleteButton = ({ rowData, delReceipt, user }) => {
 };
 
 const ReceiptTable = ({ receipts, history, match, delReceipt, user }) => {
-  const dataArray = receipts.map(
+  const now = new Date
+  const [fDate, setDate] = useState({ start: '', end: now.toDateString()})
+  const handleChange = event => {
+    const { value, name } = event.target;
+    setDate({ ...fDate, [name]: value });
+  }
+  const dataArray = receipts.filter(x => x.rcp_date >= fDate.start && x.rcp_date <= fDate.end).map(
     (x, index) => ({
       column1: `${index + 1}`,
       rcp_code: x.rcp_code,
@@ -103,15 +110,18 @@ const ReceiptTable = ({ receipts, history, match, delReceipt, user }) => {
         data: dataArray,
         loading: true
       })   
-  }, [receipts])
+  }, [receipts, fDate])
   const dispatch = async (action) => {
     changeTableProps((prevState) => kaReducer(prevState, action));
   }
   return (
     <div>
-      <input type='search' defaultValue={tableProps.searchText} onChange={(event) => {
-        dispatch(search(event.currentTarget.value));
-      }} className='top-element' placeholder="tìm kiếm"/>
+      <div className="search-filter">
+        <DatePicker value={fDate} name="start" handleChange={handleChange} />
+        <input type='search' defaultValue={tableProps.searchText} onChange={(event) => {
+          dispatch(search(event.currentTarget.value));
+        }} className='search' placeholder="tìm kiếm"/>
+      </div>
       <Table
         {...tableProps}
         childComponents={{

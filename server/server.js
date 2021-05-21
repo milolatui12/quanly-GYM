@@ -29,6 +29,26 @@ app.post('/login', async (req, res) => {
     }
 })
 
+app.post('/logup', async (req, res) => {
+    const { accountId, idCode, firstName, lastName, birthDate, username, role } = req.body;
+    try {
+        const pool = await poolPromise
+        await pool.request()
+            .input("account_id", sql.Int, accountId)
+            .input("id_code", sql.NVarChar(20), idCode)
+            .input("first_name", sql.NVarChar(10), firstName)
+            .input("last_name", sql.NVarChar(20), lastName)
+            .input("birth_date", sql.Date, birthDate)
+            .input("username", sql.NVarChar(20), username)
+            .input("rol", sql.NVarChar(20), role)
+            .execute("InsertAccount").then(record => {
+                return res.status(200).send('success')
+            }).catch(err => res.status(500).send(err.message))
+    } catch (error) {
+        return res.status(500).send(error.message)
+    }
+})
+
 app.get('/fetch-suppliers', async (req, res) => {
     try {
         const pool = await poolPromise
@@ -257,6 +277,21 @@ app.post('/edit-equipment', async (req, res) => {
     }
 })
 
+app.post('/delete-equipment', async (req, res) => {
+    const { id, accountId } = req.body
+    try {
+        const pool = await poolPromise
+        await pool.request()
+            .input("id", sql.Int, id)
+            .input("account_id", sql.Int, accountId)
+            .execute("DeleteEquipment").then(record => {
+                return res.status(200).send("success")
+            })
+    } catch (error) {
+        res.status(500).send(error.message)
+    }
+})
+
 app.post('/fetch-record', async (req, res) => {
     try {
         const pool = await poolPromise
@@ -271,12 +306,26 @@ app.post('/fetch-record', async (req, res) => {
     }
 })
 
+
 app.post('/fetch-state', async (req, res) => {
     try {
         const pool = await poolPromise
         await pool.request()
+        .input("rol", sql.NVarChar(10), req.body.rol)
+        .execute("GetStateRecord").then(record => {
+            return res.status(200).json(record.recordset)
+        })
+    } catch (error) {
+        res.status(500).send(error.message)
+    }
+})
+
+app.post('/fetch-accounts', async (req, res) => {
+    try {
+        const pool = await poolPromise
+        await pool.request()
             .input("rol", sql.NVarChar(10), req.body.rol)
-            .execute("GetStateRecord").then(record => {
+            .execute("GetAccounts").then(record => {
                 if(!record.recordset[0].msg) return res.status(200).json(record.recordset)
                 return res.status(200).json(record.recordset)
             })
@@ -285,6 +334,35 @@ app.post('/fetch-state', async (req, res) => {
     }
 })
 
+app.post('/reset-password', async (req, res) => {
+    const { role, id, accountId } = req.body
+    try {
+        const pool = await poolPromise
+        await pool.request()
+            .input("rol", sql.NVarChar(10), role)
+            .input("id", sql.Int, id)
+            .input("account_id", sql.Int, accountId)
+            .execute("ResetPwd").then(record => {
+                return res.status(200).send("success")
+            })
+    } catch (error) {
+        res.status(500).send(error.message)
+    }
+})
+
+app.post('/fetch-profile', async (req, res) => {
+    const { accountId } = req.body
+    try {
+        const pool = await poolPromise
+        await pool.request()
+            .input("account_id", sql.Int, accountId)
+            .execute("GetProfile").then(record => {
+                return res.status(200).json(record.recordset[0])
+            })
+    } catch (error) {
+        res.status(500).send(error.message)
+    }
+})
 
 app.get('/', (req, res) => {
     res.send('<h1>SERVER RUN</h1>');

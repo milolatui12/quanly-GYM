@@ -1,24 +1,27 @@
 import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import axios from 'axios';
+import date from 'date-and-time';
+
+import { deleteEquip } from '../../redux/equipment/equipment.actions';
+import DatePicker from '../date-picker/date-picker.component';
 
 import { Table, kaReducer } from 'ka-table';
 import { search } from 'ka-table/actionCreators';
 import { DataType, EditingMode, SortingMode, PagingPosition } from 'ka-table/enums';
 import { loadData } from 'ka-table/actionCreators';
 
+import { RiEdit2Fill, RiDeleteBin2Fill } from 'react-icons/ri';
 import "ka-table/style.css";
-import "./equip-table.styles.scss";
 
-
-const handleDel = async (rcp_code, delReceipt) => {
+const handleDel = async (id, userId, delEquip) => {
   try {
-    const response = await axios.post('http://localhost:3030/delete-receipt', {
-      rcp_code: rcp_code
+  await axios.post('http://localhost:3030/delete-equipment', {
+      id: id,
+      accountId: userId
     })
-    if(response.status == 200) {
-      delReceipt(rcp_code)
-    }
+    delEquip(id)
   } catch (error) {
     alert(error);
   }
@@ -27,8 +30,7 @@ const handleDel = async (rcp_code, delReceipt) => {
 const EditButton = ({ rowData, history, match }) => {
   return (
    <div className='edit-cell-button'>
-     <img
-      src='https://komarovalexander.github.io/ka-table/static/icons/edit.svg'
+     <RiEdit2Fill
       alt='Edit Row'
       title='Edit Row'
       onClick={() => history.push(`${match.url}/${rowData.id}`)}
@@ -36,27 +38,33 @@ const EditButton = ({ rowData, history, match }) => {
    </div>
   );
 };
-const DeleteButton = ({ rowData, delReceipt }) => {
+const DeleteButton = ({ rowData, userId, delEquip }) => {
   return (
    <div className='edit-cell-button'>
-     <img
-      src='https://komarovalexander.github.io/ka-table/static/icons/delete.svg'
+     <RiDeleteBin2Fill
       alt='Delete Row'
       title='Delete Row'
-      onClick={() => handleDel(rowData.rcp_code, delReceipt)}
+      onClick={() => handleDel(rowData.id, userId, delEquip)}
     />
    </div>
   );
 };
 
-const EquipTable = ({ equips, history, match }) => {
-  // let d = new Date(equips[0].rcp_date)
-  // console.log(d.getDate())
-  const dataArray = equips.map(
+const EquipTable = ({ equips, history, match, delEquip, userId }) => {
+  console.log(equips)
+  const now = new Date
+  const [fDate, setDate] = useState({ start: '', end: now.toDateString()})
+  const handleChange = event => {
+    const { value, name } = event.target;
+
+    setDate({ ...fDate, [name]: value });
+  }
+  const dataArray = equips.filter(x => x.rcp_date >= fDate.start && x.rcp_date <= fDate.end).map(
     (x, index) => ({
       order: `${index + 1}`,
+      rcpDate: x.rcp_date,
       name: x.eg_name,
-      warranty: x.warranty,
+      warranty: x.warranty >= now? "còn hạn": "hết hạn",
       supplier: x.name,
       descript: x.des,
       status: x.state_des,
@@ -66,17 +74,24 @@ const EquipTable = ({ equips, history, match }) => {
 
   const tablePropsInit = {
     columns: [
-      { key: 'order', title: 'STT', dataType: DataType.Number, style: {width: 50} },
+      { key: 'id', title: 'ID', dataType: DataType.String, style: {width: 50} },
+      //{ key: 'order', title: 'STT', dataType: DataType.Number, style: {width: 50} },
       { key: 'name', title: 'TÊN', dataType: DataType.String, style: {width: 150} },
-      { key: 'warranty', title: 'HẠN BẢO HÀNH', dataType: DataType.String, style: {width: 150} },
-      { key: 'supplier', title: 'NHÀ CUNG CẤP', dataType: DataType.String, style: {width: 200} },
+      { key: 'rcpDate', title: 'NGÀY NHẬP', dataType: DataType.Date, style: {width: 150} },
+      { key: 'warranty', title: 'BẢO HÀNH', dataType: DataType.String, style: {width: 150} },
+      { key: 'supplier', title: 'NHÀ CUNG CẤP', dataType: DataType.String, style: {width: 150} },
       { key: 'descript', title: 'MÔ TẢ', dataType: DataType.String, style: {width: 200} },
-      { key: 'status', title: 'TÌNH TRẠNG', dataType: DataType.String, style: {width: 200} },
+      { key: 'status', title: 'TÌNH TRẠNG', dataType: DataType.String, style: {width: 150} },
       { key: 'editColumn', title: '',  style: {width: 50, cursor: "pointer"}},
       { key: 'deleteColumn', title: '',  style: {width: 50, cursor: "pointer"}},
     ],
     loading: {
       enabled: false
+    },
+    format: ({ column, value }) => {
+      if (column.dataType === DataType.Date){
+        return value && value.toLocaleDateString('en-GB', {month: '2-digit', day: '2-digit', year: 'numeric' });
+      }
     },
     paging: {
       enabled: true,
@@ -98,15 +113,19 @@ const EquipTable = ({ equips, history, match }) => {
         data: dataArray,
         loading: true
       })   
-  }, [equips])
+  }, [equips, fDate])
   const dispatch = async (action) => {
     changeTableProps((prevState) => kaReducer(prevState, action));
   }
+
   return (
     <div>
-      <input type='search' defaultValue={tableProps.searchText} onChange={(event) => {
-        dispatch(search(event.currentTarget.value));
-      }} className='top-element' placeholder="tìm kiếm"/>
+      <div className="search-filter">
+        <DatePicker value={fDate} name="start" handleChange={handleChange} />
+        <input type='search' defaultValue={tableProps.searchText} onChange={(event) => {
+          dispatch(search(event.currentTarget.value));
+        }} className='search' placeholder="tìm kiếm"/>
+      </div>
       <Table
         {...tableProps} 
         dispatch={dispatch}
@@ -116,9 +135,9 @@ const EquipTable = ({ equips, history, match }) => {
               if (props.column.key === 'editColumn'){
                 return <EditButton {...props} history={history} match={match} />
               }
-              // if (props.column.key === 'deleteColumn'){
-              //   return <DeleteButton {...props} delReceipt={delReceipt} />
-              // }
+              if (props.column.key === 'deleteColumn'){
+                return <DeleteButton {...props} delEquip={delEquip} userId={userId} />
+              }
             }
           },
           noDataRow: {
@@ -130,5 +149,13 @@ const EquipTable = ({ equips, history, match }) => {
   );
 };
 
+const mapStateToProps =({ user }) => ({
+  userId: user.currentUser.id
+})
 
-export default withRouter(EquipTable);
+const mapDispatchToProps = dispatch => ({
+  delEquip: id => dispatch(deleteEquip(id))
+})
+
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(EquipTable));

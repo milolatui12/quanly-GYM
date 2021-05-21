@@ -21,7 +21,7 @@ const SupplierPage = ({ supplierList }) => {
 
 
     return (
-        <div className="suppliers-container">
+        <div className="suppliers-container page">
             <h1>Nhà cung cấp</h1>
             <Button id="suppliers-btn" onClick={() => onVisible()}>Thêm</Button>
             <SupplierTable suppliers={supplierList} />

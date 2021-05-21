@@ -10,21 +10,29 @@ import EquipmentPage from '../equipment-page/equipment-page.component';
 import SupplierEdit from '../supplier-edit-page/supplier-edit-page.component';
 import ReceiptEdit from '../receipt-edit-page/receipt-edit-page.component';
 import EquipmentEdit from '../equipment-edit-page/equipment-edit-page.component';
+import BodyWrapper from '../../components/body-wrapper/body-wrapper.component';
+import AccountPage from '../../pages/account-page/account-page.component';
+import ProfilePage from '../../pages/profile-page/profile-page.component';
+
+import './main-process-page.styles.scss';
 
 const MainProcessPage = () => {
     return (
       <BrowserRouter>
         <div className="main-container">
-            <Header />
+            {/* <Header /> */}
+            <BodyWrapper />
             <Switch>
               <Route exact path="/" component={HomePage} />
+              <Route exact path="/account" component={AccountPage} />
               <Route exact path="/suppliers" component={SupplierPage} />
               <Route exact path="/receipt" component={ReceiptPage} />
               <Route exact path="/receipt/adddevice" component={AddDevicePage} />
               <Route exact path="/equipment" component={EquipmentPage} />
               <Route path="/suppliers/:suppId" component={SupplierEdit} />
-              <Route path="/receipt/:rcpId" component={ReceiptEdit} />
-              <Route path="/equipment/:equipId" component={EquipmentEdit} />
+              <Route exact path="/receipt/:rcpId" component={ReceiptEdit} />
+              <Route exact path="/equipment/:equipId" component={EquipmentEdit} />
+              <Route exact path="/profile" component={ProfilePage} />
             </Switch>
         </div>
       </BrowserRouter>
