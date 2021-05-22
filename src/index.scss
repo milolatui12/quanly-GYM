@@ -12,7 +12,7 @@ body {
   }
 
   .body-wrapper {
-    height: 100vh;
+    height: 100%;
   }
 
   .page {
@@ -20,8 +20,12 @@ body {
     height: 100%;
     display: flex;
     flex-direction: column;
-    padding: 10px 0 0 10px;
+    margin: 0 10px 10px 10px;
     color: black;
+
+    .pagination {
+      height: 50px;
+    }
   }
 
   .search {

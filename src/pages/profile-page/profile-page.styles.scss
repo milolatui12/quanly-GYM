@@ -1,20 +1,15 @@
 .page {
-
-    .input-form {
+    .new {
         width: 500px;
     }
-    .form-group {
-        margin-bottom: 0;
-    }
-
-    .btn-group {
+    
+    .group-btn {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
 
         button {
             width: 200px;
-            margin: 10px;
         }
     }
 
@@ -30,5 +25,11 @@
         width: 200px;
         height: 200px;
         border-radius: 50%;
+    }
+
+    .warnning {
+        text-align: center;
+        font-weight: 500;
+        color: red;
     }
 }

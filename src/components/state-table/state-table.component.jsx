@@ -13,6 +13,30 @@ import { loadData } from 'ka-table/actionCreators';
 
 import "ka-table/style.css";
 
+const bootstrapChildComponents = {
+  table: {
+    elementAttributes: () => ({
+      className: 'table table-striped table-hover table-bordered'
+    })
+  },
+  tableHead: {
+    elementAttributes: () => ({
+      className: 'thead-dark'
+    })
+  },
+  pagingIndex: {
+    elementAttributes: ({ isActive }) => ({
+      className: `page-item ${(isActive ? 'active' : '')}`
+    }),
+    content: ({ text }) => <div className='page-link'>{text}</div>
+  },
+  pagingPages: {
+    elementAttributes: () => ({
+      className: 'pagination'
+    }),
+  }
+}
+
 const RecordStateTable = ({ records }) => {
   const now = new Date
   const [fDate, setDate] = useState({ start: '', end: now.toDateString()})
@@ -86,6 +110,7 @@ const RecordStateTable = ({ records }) => {
         {...tableProps}
         dispatch={dispatch}
         childComponents={{
+          ...bootstrapChildComponents,
           noDataRow: {
             content: () => 'No Data Found'
           }

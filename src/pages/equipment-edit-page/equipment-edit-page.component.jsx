@@ -83,7 +83,7 @@ const EquipmentEdit = ({ user, history, match }) => {
                     </Form.Group>
                     <Button
                         onClick={() => handleSubmit()} 
-                        variant="primary" type="button">Submit</Button>
+                        variant="primary" type="button">Lưu</Button>
                 </div>
             </Form>
         </div>

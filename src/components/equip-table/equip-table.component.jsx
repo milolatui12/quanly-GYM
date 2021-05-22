@@ -15,6 +15,30 @@ import { loadData } from 'ka-table/actionCreators';
 import { RiEdit2Fill, RiDeleteBin2Fill } from 'react-icons/ri';
 import "ka-table/style.css";
 
+const bootstrapChildComponents = {
+  table: {
+    elementAttributes: () => ({
+      className: 'table table-striped table-hover table-bordered'
+    })
+  },
+  tableHead: {
+    elementAttributes: () => ({
+      className: 'thead-dark'
+    })
+  },
+  pagingIndex: {
+    elementAttributes: ({ isActive }) => ({
+      className: `page-item ${(isActive ? 'active' : '')}`
+    }),
+    content: ({ text }) => <div className='page-link'>{text}</div>
+  },
+  pagingPages: {
+    elementAttributes: () => ({
+      className: 'pagination'
+    }),
+  }
+}
+
 const handleDel = async (id, userId, delEquip) => {
   try {
   await axios.post('http://localhost:3030/delete-equipment', {
@@ -130,6 +154,7 @@ const EquipTable = ({ equips, history, match, delEquip, userId }) => {
         {...tableProps} 
         dispatch={dispatch}
         childComponents={{
+          ...bootstrapChildComponents,
           cellText: {
             content: (props) => {
               if (props.column.key === 'editColumn'){

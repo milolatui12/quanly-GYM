@@ -13,6 +13,30 @@ import { BiReset } from 'react-icons/bi';
 
 import "ka-table/style.css";
 
+const bootstrapChildComponents = {
+  table: {
+    elementAttributes: () => ({
+      className: 'table table-striped table-hover table-bordered'
+    })
+  },
+  tableHead: {
+    elementAttributes: () => ({
+      className: 'thead-dark'
+    })
+  },
+  pagingIndex: {
+    elementAttributes: ({ isActive }) => ({
+      className: `page-item ${(isActive ? 'active' : '')}`
+    }),
+    content: ({ text }) => <div className='page-link'>{text}</div>
+  },
+  pagingPages: {
+    elementAttributes: () => ({
+      className: 'pagination'
+    }),
+  }
+}
+
 const handleReset = async (rowData, user) => {
   try {
     await axios.post('http://localhost:3030/reset-password', {
@@ -102,14 +126,12 @@ const AccountTable = ({ accounts, history, match, user }) => {
       <Table
         {...tableProps}
         childComponents={{
+          ...bootstrapChildComponents,
           cellText: {
             content: (props) => {
               if (props.column.key === 'resetColumn'){
                 return <ResetButton {...props} user={user}/>
               }
-              // if (props.column.key === 'deleteColumn'){
-              //   return <DeleteButton {...props} delSupplier={delSupplier} user={user}/>
-              // }
             }
           },
           noDataRow: {

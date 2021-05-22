@@ -34,7 +34,7 @@ const SupplierEdit = ({ supplier, updateSupplier, history, user }) => {
                 history.push('/suppliers')
             }
         } catch (error) {
-            alert(error);
+            alert("Thất bại");
         }
     }
     return (
