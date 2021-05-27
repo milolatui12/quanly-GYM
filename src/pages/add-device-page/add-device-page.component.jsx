@@ -76,50 +76,53 @@ const AddDevicePage = ({ suppliers, eGList, addEG, cleanEG, addRcp, history, sta
     }, [])
 
     return (
-        <div className="container-add-page">
+        <div className="container-add-page page">
                 <Form  onSubmit={handleSubmit(onSubmit)}>
                     <div id="headerr">
-                        <Form.Group controlId="supplier">
-                            <Form.Label>Nhà cung cấp</Form.Label>
-                            <Form.Control 
-                                as="select" 
-                                name="supplier" 
-                                value={supp} 
-                                onChange={event => setSupp(event.target.value)}
-                                ref={register({
-                                    required: 'Supplier is required.',
-                                })}>
-                                {suppliers.map(supplier => 
-                                        <option key={supplier.id} value={supplier.id}>{supplier.name}</option>
+                        <div className="i-p">
+                            <Form.Group controlId="supplier">
+                                <Form.Label>Nhà cung cấp</Form.Label>
+                                <Form.Control 
+                                    as="select" 
+                                    name="supplier" 
+                                    value={supp} 
+                                    onChange={event => setSupp(event.target.value)}
+                                    ref={register()}>
+                                    {suppliers.map(supplier => 
+                                            <option key={supplier.id} value={supplier.id}>{supplier.name}</option>
+                                    )}
+                                </Form.Control>
+                            </Form.Group>
+                            <Form.Group controlId="date">
+                                <Form.Label>Ngày nhập</Form.Label>
+                                <Form.Control
+                                    type="date"
+                                    name="date"
+                                    autoComplete="off"
+                                    ref={register({
+                                        required: 'Date is required.',
+                                    })}
+                                    className={`${errors.date ? 'input-error' : ''}`}
+                                />
+                            </Form.Group>
+                            <Form.Group controlId="rcp_code">
+                                <Form.Label>Mã phiếu</Form.Label>
+                                <Form.Control
+                                    type="number"
+                                    name="rcp_code"
+                                    placeholder="Mã phiếu"
+                                    autoComplete="false"
+                                    ref={register({
+                                        required: 'Không hợp lệ.',
+                                        min:0
+                                    })}
+                                    className={`${errors.rcp_code ? 'input-error' : ''}`}
+                                />
+                                {errors.rcp_code && (
+                                    <p className="errorMsg">{errors.rcp_code.message}</p>
                                 )}
-                            </Form.Control>
-                        </Form.Group>
-                        
-                        <Form.Group controlId="date">
-                            <Form.Label>Ngày nhập</Form.Label>
-                            <Form.Control
-                                type="date"
-                                name="date"
-                                autoComplete="off"
-                                ref={register({
-                                    required: 'Date is required.',
-                                })}
-                                className={`${errors.date ? 'input-error' : ''}`}
-                            />
-                        </Form.Group>
-                        <Form.Group controlId="rcp_code">
-                            <Form.Label>Mã phiếu</Form.Label>
-                            <Form.Control
-                                type="number"
-                                name="rcp_code"
-                                autoComplete="false"
-                                ref={register({
-                                    required: 'Invalid.',
-                                    min:0
-                                })}
-                                className={`${errors.rcp_code ? 'input-error' : ''}`}
-                            />
-                        </Form.Group>
+                            </Form.Group>
+                        </div>
                         <Button id="add-btn" type="button" onClick={() => onVisible()}>Thêm từ danh mục</Button>
                     </div>
                     <DeviceTable devices={eGList} />

@@ -45,7 +45,7 @@ const NavSidebar = ({ signOut }) => {
                             <MenuItem
                                 icon={<BiHistory/>}
                             >
-                                <Link to="/">Lịch sử</Link>
+                                <Link to="/manage">Lịch sử</Link>
                             </MenuItem>
                             <MenuItem>
                                 <Link to="/account">Tài khoản</Link>

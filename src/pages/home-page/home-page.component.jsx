@@ -42,7 +42,6 @@ const HomePage = ({ user }) => {
                     <div className="btn-group">
                         <Button className={`${btnState == 'staff'? "chose": ""}`} type="button" name="staff" onClick={(e) => handleChange(e)}>Nhân viên</Button>
                         <Button className={`${btnState == 'equip'? "chose": ""}`} type="button" name="equip" onClick={(e) => handleChange(e)}>Thiết bị</Button>
-                        <Button className={`${btnState == 'supp'? "chose": ""}`} type="button" name="supp" onClick={(e) => handleChange(e)}>NCC</Button>
                     </div>
                     {
                         btnState == 'staff'?

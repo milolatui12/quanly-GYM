@@ -113,6 +113,9 @@ const RecordStateTable = ({ records }) => {
           ...bootstrapChildComponents,
           noDataRow: {
             content: () => 'No Data Found'
+          },
+          tableWrapper: {
+            elementAttributes: () => ({ style: { maxHeight: 500 }})
           }
         }}
       />

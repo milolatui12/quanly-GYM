@@ -10,7 +10,7 @@ import { fetchReceipt } from '../../redux/receipt/receipt.actions';
 
 import './login.styles.scss';
 
-const Login = ({ setUser, fetchSuppliers, fetchReceipts }) => {
+const Login = ({ setUser, fetchSuppliers, fetchReceipts, history }) => {
     const { register, handleSubmit, errors } = useForm();
     const [userCredentials, setCredentials] = useState(''); 
 
@@ -27,6 +27,7 @@ const Login = ({ setUser, fetchSuppliers, fetchReceipts }) => {
                 try {
                     const suppliers = await axios.get('http://localhost:3030/fetch-suppliers')
                     fetchSuppliers(suppliers.data)
+                    history.push("/manage")
                 } catch (error) {
                     console.log(error)
                 }

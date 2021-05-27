@@ -58,7 +58,7 @@ const EditButton = ({ rowData, history, match }) => {
       alt='Edit Row'
       title='Edit Row'
       onClick={() => history.push(`${match.url}/${rowData.id}`)}
-    />
+      />
    </div>
   );
 };
@@ -146,6 +146,9 @@ const SupplierTable = ({ suppliers, history, match, delSupplier, user }) => {
           },
           noDataRow: {
             content: () => 'No Data Found'
+          },
+          tableWrapper: {
+            elementAttributes: () => ({ style: { maxHeight: 500 }})
           }
         }}
         dispatch={dispatch}

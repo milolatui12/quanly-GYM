@@ -161,6 +161,9 @@ const ReceiptTable = ({ receipts, history, match, delReceipt, user }) => {
           },
           noDataRow: {
             content: () => 'No Data Found'
+          },
+          tableWrapper: {
+            elementAttributes: () => ({ style: { maxHeight: 500 }})
           }
         }}
         dispatch={dispatch}

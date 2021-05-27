@@ -34,7 +34,7 @@ const AccountPage = ({ user }) => {
                     <h1>Tài khoản</h1>
                     <Button id="account-btn" onClick={() => onVisible()}>Thêm</Button>
                     <AccountTable accounts={accounts} />
-                    <AccountForm visible={visible} onVisible={onVisible} />
+                    <AccountForm visible={visible} onVisible={onVisible} setAccount={setAccounts} accounts={accounts} />
                 </div>
                 : 
                 <h1>Không có quyền thực hiện hành động này</h1>

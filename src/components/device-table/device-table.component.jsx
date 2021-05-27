@@ -137,6 +137,12 @@ const DeviceTable = ({ devices, deleteEG, match }) => {
             }
           }
         },
+        tableWrapper: {
+          elementAttributes: () => ({ style: { maxHeight: 500 }})
+        },
+        noDataRow: {
+          content: () => 'Trống'
+        }
       }}
       dispatch={dispatch}
     />

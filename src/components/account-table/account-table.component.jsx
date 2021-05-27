@@ -54,8 +54,8 @@ const ResetButton = ({ rowData, user }) => {
   return (
    <div className='edit-cell-button'>
      <BiReset
-      alt='Edit Row'
-      title='Edit Row'
+      alt='Reset password'
+      title='Reset password'
       onClick={() => handleReset(rowData, user)}
     />
    </div>
@@ -63,12 +63,11 @@ const ResetButton = ({ rowData, user }) => {
 };
 
 const AccountTable = ({ accounts, history, match, user }) => {
-  console.log(accounts)
   const dataArray = accounts.map(
     (x, index) => ({
       order: `${index + 1}`,
       username: x.username,
-      idCode: x.staff_code,
+      idCode: x.id_code,
       name: `${x.last_name}  ${x.first_name}`,
       birthDate: x.birth_date,
       role: x.rol,
@@ -136,6 +135,9 @@ const AccountTable = ({ accounts, history, match, user }) => {
           },
           noDataRow: {
             content: () => 'No Data Found'
+          },
+          tableWrapper: {
+            elementAttributes: () => ({ style: { maxHeight: 500 }})
           }
         }}
         dispatch={dispatch}

@@ -10,7 +10,6 @@ import { DataType, EditingMode, SortingMode, PagingPosition } from 'ka-table/enu
 import { loadData } from 'ka-table/actionCreators';
 
 import "ka-table/style.css";
-import "./record-table.styles.scss";
 
 const bootstrapChildComponents = {
   table: {
@@ -25,9 +24,9 @@ const bootstrapChildComponents = {
   },
   pagingIndex: {
     elementAttributes: ({ isActive }) => ({
-      className: `page-item ${(isActive ? 'active' : '')}`
+      className: `page-item btn-group ${(isActive ? 'active' : '')}`
     }),
-    content: ({ text }) => <div className='page-link'>{text}</div>
+    content: ({ text }) => <div className='page-link btn-group'>{text}</div>
   },
   pagingPages: {
     elementAttributes: () => ({
@@ -110,6 +109,9 @@ const RecordTable = ({ records }) => {
           ...bootstrapChildComponents,
           noDataRow: {
             content: () => 'No Data Found'
+          },
+          tableWrapper: {
+            elementAttributes: () => ({ style: { maxHeight: 500 }})
           }
         }}
       />

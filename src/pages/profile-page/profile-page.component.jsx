@@ -6,10 +6,14 @@ import axios from 'axios';
 
 import ProfileForm from '../../components/profile-form/profile-form.component';
 
+import { BackgroundImage } from './profile-page.styles.jsx';
+
 import { selectSupplier } from '../../redux/supplier/supplier.selectors';
 import { updateSupplier } from '../../redux/supplier/supplier.actions';
 
 import { TiWarning } from 'react-icons/ti';
+import { RiExchangeLine } from 'react-icons/ri';
+
 
 import './profile-page.styles.scss';
 
@@ -42,7 +46,7 @@ const ProfilePage = ({ supplier, history, user }) => {
                 staffId: profile.staff_id, 
                 firstName: profile.first_name, 
                 lastName: profile.last_name, 
-                idCode: profile.staff_code, 
+                idCode: profile.id_code, 
                 birthDate: profile.birth_date
             })
             if(respone.status == 200) {
@@ -54,10 +58,34 @@ const ProfilePage = ({ supplier, history, user }) => {
             alert("Thay đổi thông tin thất bại")
         }
     }
+    const uploadImage = (e) => {
+        let file = e
+        let reader = new FileReader();
+        reader.onloadend = async function() {
+            try {
+                const respone = await axios.post('http://localhost:3030/change-avatar', {
+                    accountId: user.id,
+                    data: reader.result
+                })
+                if(respone.status == 200) {
+                    setProfile({ ...profile, avatar: reader.result })
+                    return alert("Thay đổi thông tin thành công")
+                }
+                return alert("Thay đổi thông tin thất bại")
+            } catch (error) {
+                alert("Thay đổi thông tin thất bại")
+            }
+        }
+        reader.readAsDataURL(file);
+    }
 
     return (
         <div className="page">
-            <img src="https://www.w3schools.com/w3css/img_snowtops.jpg" alt="avatar" height="200" width="200" class="avatar"/>
+            <div className="image-container">
+                <BackgroundImage image={profile? profile.avatar: ''} alt="avatar" />
+                <RiExchangeLine/>
+                <input type="file" onChange={e => uploadImage(e.target.files[0])}></input>
+            </div>
             <div className="info">
                 <Form className="input-form new">
                     {
@@ -82,11 +110,11 @@ const ProfilePage = ({ supplier, history, user }) => {
                                 />
                             </Form.Group>
                         </div>
-                        <Form.Group controlId="staff_code">
+                        <Form.Group controlId="id_code">
                             <Form.Label>CMND</Form.Label>
                             <Form.Control
-                                name="staff_code"
-                                value={profile.staff_code}
+                                name="id_code"
+                                value={profile.id_code}
                                 onChange={event => handleChange(event)}
                             />
                         </Form.Group>

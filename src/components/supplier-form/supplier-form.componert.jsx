@@ -97,7 +97,7 @@ const SupplierForm = ({ visible, onVisible, addSupplier, user }) => {
                         )}
                     </Form.Group>
 
-                    <Button variant="primary" type="submit">Next</Button>
+                    <Button variant="primary" type="submit">Thêm</Button>
                 </div>
             </Form>
         </Rodal>

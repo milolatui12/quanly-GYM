@@ -10,7 +10,7 @@ import { addSupplier } from '../../redux/supplier/supplier.actions';
 
 import 'rodal/lib/rodal.css';
 
-const AccountForm = ({ visible, onVisible, addSupplier, user }) => {
+const AccountForm = ({ visible, onVisible, user, setAccount, accounts }) => {
     const { register, handleSubmit, errors, reset } = useForm();
     const rolOptions = ["admin", "staff"];
     const [rol, setRol] = useState(rolOptions[0]);
@@ -25,9 +25,7 @@ const AccountForm = ({ visible, onVisible, addSupplier, user }) => {
                 username: data.username, 
                 role: data.rol
             })
-            // addSupplier({
-            //     ...response.data
-            // });
+            setAccount([...accounts, data])
             onVisible();
             reset();          
         } catch (error) {

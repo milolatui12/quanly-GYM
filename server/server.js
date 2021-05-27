@@ -6,7 +6,7 @@ const { poolPromise } = require('./configs');
 
 const app = express();
 const PORT  = process.PORT || 3030;
-app.use(express.json());
+app.use(express.json({limit: '50mb'}));
 app.use(cors());
 //app.use(userRouter);
 app.post('/login', async (req, res) => {
@@ -357,6 +357,7 @@ app.post('/fetch-profile', async (req, res) => {
         await pool.request()
             .input("account_id", sql.Int, accountId)
             .execute("GetProfile").then(record => {
+                record.recordset[0] = { ...record.recordset[0], avatar: record.recordset[0].avatar.toString() }
                 return res.status(200).json(record.recordset[0])
             })
     } catch (error) {
@@ -372,7 +373,7 @@ app.post('/edit-profile', async (req, res) => {
             .input("staff_id", sql.Int, staffId)
             .input("first_name", sql.NVarChar(10), firstName)
             .input("last_name", sql.NVarChar(20), lastName)
-            .input("staff_code", sql.NVarChar(20), idCode)
+            .input("id_code", sql.NVarChar(20), idCode)
             .input("birth_date", sql.Date, birthDate)
             .execute("EditProfile").then(record => {
                 return res.status(200).send("success")
@@ -393,6 +394,21 @@ app.post('/change-password', async (req, res) => {
             .execute("EditPwd").then(record => {
                 if(!record.recordset) return res.status(200).send("success")
                 return res.status(201).json(record.recordset[0]) 
+            })
+    } catch (error) {
+        res.status(500).send(error.message)
+    }
+})
+
+app.post('/change-avatar', async (req, res) => {
+    const { accountId, data } = req.body
+    try {
+        const pool = await poolPromise
+        await pool.request()
+            .input("account_id", sql.Int, accountId)
+            .input("avatar", sql.Image, new Buffer.from(data))
+            .execute("EditAvatar").then(record => {
+                return res.status(200).send("success")
             })
     } catch (error) {
         res.status(500).send(error.message)

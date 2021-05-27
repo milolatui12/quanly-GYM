@@ -2,5 +2,9 @@
     display: flex;
     flex-direction: row;
     height: 100vh;
-    overflow-y: auto;
+
+    .body-wrapper {
+        height: 100vh;
+        width: fit-content;
+    }
 }

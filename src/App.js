@@ -8,12 +8,7 @@ import LoginPage from './pages/login-page/login-page.component';
 const App = ({ currentUser }) =>  {
   return (
     <div className="app">
-      {
-        currentUser?
-        <MainProcessPage />:
-        <LoginPage />
-        
-      }
+        <MainProcessPage />
     </div>
   );
 }

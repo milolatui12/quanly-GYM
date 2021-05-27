@@ -20,15 +20,24 @@
 
         #headerr {
             display: flex;
-            input {
+            justify-content: space-between;
+            .i-p {
+                display: flex;
+            }
+
+            input, option, select {
+                color: black;
+                font-weight: 500;
+                opacity: 0.8;
+                background-color: #b1abab;
                 &::-webkit-calendar-picker-indicator { 
                     display: none; 
                 }
             }
 
             #add-btn {
-                position: relative;
-                right: 0;
+                justify-self: right;
+                margin-right: 30px;
                 min-width: 200px;
             }
 
@@ -38,7 +47,7 @@
                 height: 100px;
 
                 input {
-                    width: 200px;
+                    width: 300px;
                 }
             }
         }
@@ -57,6 +66,7 @@
     
     #save-btn {
         width: 100px;
+        margin-top: 20px;
         align-self: flex-end;
     }
 }

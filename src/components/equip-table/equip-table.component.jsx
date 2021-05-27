@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import axios from 'axios';
 import date from 'date-and-time';
+import ReactToPrint from 'react-to-print';
 
 import { deleteEquip } from '../../redux/equipment/equipment.actions';
 import DatePicker from '../date-picker/date-picker.component';
@@ -75,7 +76,6 @@ const DeleteButton = ({ rowData, userId, delEquip }) => {
 };
 
 const EquipTable = ({ equips, history, match, delEquip, userId }) => {
-  console.log(equips)
   const now = new Date
   const [fDate, setDate] = useState({ start: '', end: now.toDateString()})
   const handleChange = event => {
@@ -88,7 +88,7 @@ const EquipTable = ({ equips, history, match, delEquip, userId }) => {
       order: `${index + 1}`,
       rcpDate: x.rcp_date,
       name: x.eg_name,
-      warranty: x.warranty >= now? "còn hạn": "hết hạn",
+      warranty: x.warranty > now? "còn hạn": "hết hạn",
       supplier: x.name,
       descript: x.des,
       status: x.state_des,
@@ -141,6 +141,7 @@ const EquipTable = ({ equips, history, match, delEquip, userId }) => {
   const dispatch = async (action) => {
     changeTableProps((prevState) => kaReducer(prevState, action));
   }
+  const componentRef = useRef(dataArray); 
 
   return (
     <div>
@@ -150,6 +151,7 @@ const EquipTable = ({ equips, history, match, delEquip, userId }) => {
           dispatch(search(event.currentTarget.value));
         }} className='search' placeholder="tìm kiếm"/>
       </div>
+      <button onClick={() => window.print()}>PRINT</button>
       <Table
         {...tableProps} 
         dispatch={dispatch}
@@ -167,6 +169,9 @@ const EquipTable = ({ equips, history, match, delEquip, userId }) => {
           },
           noDataRow: {
             content: () => 'No Data Found'
+          },
+          tableWrapper: {
+            elementAttributes: () => ({ style: { maxHeight: 500 }})
           }
         }}
       />
