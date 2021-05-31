@@ -8,6 +8,8 @@ import { Table, kaReducer } from 'ka-table';
 import { DataType, EditingMode, SortingMode, PagingPosition } from 'ka-table/enums';
 import { loadData } from 'ka-table/actionCreators';
 
+import { Button } from 'semantic-ui-react'
+
 import { deleteSupplier } from '../../redux/supplier/supplier.actions';
 import { BiReset } from 'react-icons/bi';
 
@@ -61,6 +63,13 @@ const ResetButton = ({ rowData, user }) => {
    </div>
   );
 };
+const ActiveButton = ({ rowData }) => {
+  return (
+    <Button toggle active={rowData.active}>
+      {rowData.active? "đang hđ": "không hđ"}
+    </Button>
+  );
+};
 
 const AccountTable = ({ accounts, history, match, user }) => {
   const dataArray = accounts.map(
@@ -71,6 +80,7 @@ const AccountTable = ({ accounts, history, match, user }) => {
       name: `${x.last_name}  ${x.first_name}`,
       birthDate: x.birth_date,
       role: x.rol,
+      active: x.active,
       id: x.id,
     })
   );
@@ -84,6 +94,7 @@ const AccountTable = ({ accounts, history, match, user }) => {
       { key: 'birthDate', title: 'NGÀY SINH', dataType: DataType.Date, style: {width: 200} },
       { key: 'role', title: 'QUYỀN', dataType: DataType.String, style: {width: 100} },
       { key: 'resetColumn', title: '',  style: {width: 50, cursor: "pointer"}},
+      { key: 'activeColumn', title: '',  style: {width: 90, cursor: "pointer"}},
     ],
     loading: {
       enabled: false
@@ -131,13 +142,16 @@ const AccountTable = ({ accounts, history, match, user }) => {
               if (props.column.key === 'resetColumn'){
                 return <ResetButton {...props} user={user}/>
               }
+              if (props.column.key === 'activeColumn'){
+                return <ActiveButton {...props}/>
+              }
             }
           },
           noDataRow: {
             content: () => 'No Data Found'
           },
           tableWrapper: {
-            elementAttributes: () => ({ style: { maxHeight: 500 }})
+            elementAttributes: () => ({ style: { maxHeight: 500, maxWidth: 5000 }})
           }
         }}
         dispatch={dispatch}

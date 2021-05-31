@@ -17,7 +17,7 @@ const EquipmentEdit = ({ user, history, match }) => {
         
         setEquipment({ ...equip.data })
     }, [])
-    const options = ["Hư", "Bình thường", "Đang bảo hành"]
+    const options = ["Hư", "Bình thường", "Đang sữa chữa"]
     const index = options.indexOf(options.find(x => x == equipment.state_des))
     const [state, setState] = useState(options[index])
     useEffect(() => {

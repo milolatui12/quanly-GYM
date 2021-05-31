@@ -26,7 +26,7 @@ const SupplierForm = ({ visible, onVisible, addSupplier, user }) => {
             onVisible();
             reset();          
         } catch (error) {
-            alert(error);
+            alert("Trùng");
         }
     };
 

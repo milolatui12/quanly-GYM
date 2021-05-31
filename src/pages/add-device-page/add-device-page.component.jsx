@@ -68,7 +68,7 @@ const AddDevicePage = ({ suppliers, eGList, addEG, cleanEG, addRcp, history, sta
                 alert(response.data)
             }
         } catch (error) {
-            alert(error.message)
+            alert("trùng mã hóa đơn")
         }
     };
     useEffect(() => {

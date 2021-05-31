@@ -151,7 +151,7 @@ const EquipTable = ({ equips, history, match, delEquip, userId }) => {
           dispatch(search(event.currentTarget.value));
         }} className='search' placeholder="tìm kiếm"/>
       </div>
-      <button onClick={() => window.print()}>PRINT</button>
+      {/* <button onClick={() => window.print()}>PRINT</button> */}
       <Table
         {...tableProps} 
         dispatch={dispatch}

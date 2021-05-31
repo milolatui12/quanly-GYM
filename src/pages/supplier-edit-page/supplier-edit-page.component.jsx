@@ -34,7 +34,7 @@ const SupplierEdit = ({ supplier, updateSupplier, history, user }) => {
                 history.push('/suppliers')
             }
         } catch (error) {
-            alert("Thất bại");
+            alert("Thất bại, trùng mã thuế");
         }
     }
     return (
