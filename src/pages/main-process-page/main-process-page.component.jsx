@@ -38,6 +38,7 @@ const MainProcessPage = ({ user }) => {
                     <Route exact path="/receipt/:rcpId" component={ReceiptEdit} />
                     <Route exact path="/equipment/:equipId" component={EquipmentEdit} />
                     <Route exact path="/profile" component={ProfilePage} />
+                    <Route path="/*" component={() => "404 not found"} />
                   </Switch>
               </div>
             }

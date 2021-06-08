@@ -8,7 +8,7 @@ import { Table, kaReducer } from 'ka-table';
 import { DataType, EditingMode, SortingMode, PagingPosition } from 'ka-table/enums';
 import { loadData } from 'ka-table/actionCreators';
 
-import { Button } from 'semantic-ui-react'
+import { Button, Dropdown } from 'semantic-ui-react';
 
 import { deleteSupplier } from '../../redux/supplier/supplier.actions';
 import { BiReset } from 'react-icons/bi';
@@ -51,6 +51,29 @@ const handleReset = async (rowData, user) => {
       alert(error);
   }
 }
+const handleActive = async (active, setActive, accountId) => {
+  try {
+    await axios.post('http://localhost:3030/update-active', {
+      accountId: accountId,
+      active: !active
+    })
+    setActive(!active)
+    alert("Thay đổi thành công")
+  } catch (error) {
+      alert(error);
+  }
+}
+const handleRole = async (role, accountId) => {
+  try {
+    await axios.post('http://localhost:3030/update-role', {
+      accountId: accountId,
+      role: role
+    })
+    alert("Thay đổi thành công")
+  } catch (error) {
+      alert(error);
+  }
+}
 
 const ResetButton = ({ rowData, user }) => {
   return (
@@ -64,14 +87,29 @@ const ResetButton = ({ rowData, user }) => {
   );
 };
 const ActiveButton = ({ rowData }) => {
+  const [active, setActive] = useState(rowData.active)
   return (
-    <Button toggle active={rowData.active}>
-      {rowData.active? "đang hđ": "không hđ"}
+    <Button toggle active={active} onClick={() => handleActive(active, setActive, rowData.id)}>
+      {active? "đang hđ": "không hđ"}
     </Button>
   );
 };
+const RoleRow = ({ rowData }) => {
+  const role = [
+    { key: 'admin', text: 'Admin', value: 'admin' },
+    { key: 'staff', text: 'Staff', value: 'staff' }
+  ];
+  const _default = role.find(e => e.key == rowData.role)
+  return (
+    <Dropdown
+      options={role}
+      defaultValue={_default.value}
+      onChange={(e, { icon, value }) => handleRole(value, rowData.id)}
+    />
+  );
+};
 
-const AccountTable = ({ accounts, history, match, user }) => {
+const AccountTable = ({ accounts, user }) => {
   const dataArray = accounts.map(
     (x, index) => ({
       order: `${index + 1}`,
@@ -93,6 +131,7 @@ const AccountTable = ({ accounts, history, match, user }) => {
       { key: 'name', title: 'TÊN NHÂN VIÊN', dataType: DataType.String, style: {width: 250} },
       { key: 'birthDate', title: 'NGÀY SINH', dataType: DataType.Date, style: {width: 200} },
       { key: 'role', title: 'QUYỀN', dataType: DataType.String, style: {width: 100} },
+      // { key: 'rol', title: 'QUYỀN', style: {width: 100} },
       { key: 'resetColumn', title: '',  style: {width: 50, cursor: "pointer"}},
       { key: 'activeColumn', title: '',  style: {width: 90, cursor: "pointer"}},
     ],
@@ -144,6 +183,9 @@ const AccountTable = ({ accounts, history, match, user }) => {
               }
               if (props.column.key === 'activeColumn'){
                 return <ActiveButton {...props}/>
+              }
+              if (props.column.key === 'role'){
+                return <RoleRow {...props}/>
               }
             }
           },

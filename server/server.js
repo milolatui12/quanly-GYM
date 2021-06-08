@@ -1,14 +1,18 @@
 const express = require('express');
+var session = require('express-session');
 const cors = require('cors');
 const sql = require('mssql');
 const { poolPromise } = require('./configs');
 
 
 const app = express();
+app.use(session({secret: 'keyboard cat'}));
 const PORT  = process.PORT || 3030;
 app.use(express.json({limit: '50mb'}));
 app.use(cors());
 //app.use(userRouter);
+
+var sess
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
     try {
@@ -350,6 +354,36 @@ app.post('/reset-password', async (req, res) => {
     }
 })
 
+app.post('/update-active', async (req, res) => {
+    const { accountId, active } = req.body
+    console.log(active)
+    try {
+        const pool = await poolPromise
+        await pool.request()
+            .input("account_id", sql.Int, accountId)
+            .input("active", sql.Bit, active)
+            .execute("EditActive").then(record => {
+                return res.status(200).send("success")
+            })
+    } catch (error) {
+        res.status(500).send(error.message)
+    }
+})
+app.post('/update-role', async (req, res) => {
+    const { accountId, role } = req.body
+    try {
+        const pool = await poolPromise
+        await pool.request()
+            .input("account_id", sql.Int, accountId)
+            .input("role", sql.NVarChar(10), role)
+            .execute("EditRole").then(record => {
+                return res.status(200).send("success")
+            })
+    } catch (error) {
+        res.status(500).send(error.message)
+    }
+})
+
 app.post('/fetch-profile', async (req, res) => {
     const { accountId } = req.body
     try {
@@ -415,7 +449,7 @@ app.post('/change-avatar', async (req, res) => {
     }
 })
 
-app.get('/', (req, res) => {
+app.get('/a', (req, res) => {
     res.send('<h1>SERVER RUN</h1>');
 });
 
