@@ -10,9 +10,7 @@ app.use(session({secret: 'keyboard cat'}));
 const PORT  = process.PORT || 3030;
 app.use(express.json({limit: '50mb'}));
 app.use(cors());
-//app.use(userRouter);
 
-var sess
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
     try {
@@ -33,7 +31,7 @@ app.post('/login', async (req, res) => {
     }
 })
 
-app.post('/logup', async (req, res) => {
+app.post('/signup', async (req, res) => {
     const { accountId, idCode, firstName, lastName, birthDate, username, role } = req.body;
     try {
         const pool = await poolPromise
@@ -115,16 +113,16 @@ app.post('/delete-supplier', async (req, res) => {
 })
 
 app.post('/add-receipt', async (req, res) => {
-    const { rcpCode, date, supplierId, staffId, total } = req.body
+    const { rcpCode, date, supplierId, accountId, total } = req.body
     try {
         const pool = await poolPromise
         await pool.request()
             .input("rcp_code", sql.NVarChar(20), rcpCode)
             .input("rcp_date", sql.Date, date)
             .input("supplier_id", sql.Int, supplierId)
-            .input("staff_id", sql.Int, staffId)
+            .input("staff_id", sql.Int, accountId)
             .input("total", sql.Money, total)
-            .input("account_id", sql.Int, staffId)
+            .input("account_id", sql.Int, accountId)
             .execute("InsertReceipt").then(record => {
                 return res.status(200).json(record.recordset[0])
             }).catch(err => res.status(500).send(err.message))

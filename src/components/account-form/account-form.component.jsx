@@ -16,7 +16,7 @@ const AccountForm = ({ visible, onVisible, user, setAccount, accounts }) => {
     const [rol, setRol] = useState(rolOptions[0]);
     const onSubmit = async (data) => {
         try {
-            const response = await axios.post('http://localhost:3030/logup', {
+            const response = await axios.post('http://localhost:3030/signup', {
                 accountId: user.id, 
                 idCode: data.id_code, 
                 firstName: data.first_name, 

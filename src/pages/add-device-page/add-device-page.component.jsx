@@ -13,7 +13,7 @@ import { addEquip } from '../../redux/equipment/equipment.actions';
 
 import './add-device-page.styles.scss';
 
-const AddDevicePage = ({ suppliers, eGList, addEG, cleanEG, addRcp, history, staffId, addEquip }) => {
+const AddDevicePage = ({ suppliers, eGList, addEG, cleanEG, addRcp, history, accountId, addEquip }) => {
     const { register, handleSubmit, errors } = useForm();
     const [visible, setVisible] = useState(false);
     const [supp, setSupp] = useState(suppliers[0].id);
@@ -30,7 +30,7 @@ const AddDevicePage = ({ suppliers, eGList, addEG, cleanEG, addRcp, history, sta
                 rcpCode: data.rcp_code,
                 date: data.date,
                 supplierId: supplier.id,
-                staffId: staffId,
+                accountId: accountId,
                 total: total
             })
             if(response.status === 200) {
@@ -136,7 +136,7 @@ const AddDevicePage = ({ suppliers, eGList, addEG, cleanEG, addRcp, history, sta
 const mapStateToProps = ({ user, supplier, equipmentGroupList }) => ({
     suppliers: supplier.suppliers,
     eGList: equipmentGroupList.eGList,
-    staffId: user.currentUser.id
+    accountId: user.currentUser.id
 });
 
 const mapDispatchToProps = dispatch => ({

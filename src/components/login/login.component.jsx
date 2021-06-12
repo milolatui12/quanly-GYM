@@ -10,7 +10,7 @@ import { fetchReceipt } from '../../redux/receipt/receipt.actions';
 
 import './login.styles.scss';
 
-const Login = ({ setUser, fetchSuppliers, fetchReceipts, history }) => {
+const Login = ({ setUser, fetchSuppliers, history }) => {
     const { register, handleSubmit, errors } = useForm();
     const [userCredentials, setCredentials] = useState(''); 
 
