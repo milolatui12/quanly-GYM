@@ -1,4 +1,16 @@
-.login-form {
-    width: 60%;
-    margin: 0 auto;
+.img-container {
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
+
+    img {
+        border-radius: 50%;
+    }
+}
+
+.text-field {
+    display: flex;
+    margin-top: 10px;
+    justify-content: center;
+    font-weight: 700;
 }

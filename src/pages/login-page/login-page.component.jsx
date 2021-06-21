@@ -2,6 +2,7 @@ import React from 'react';
 import { Route } from 'react-router-dom';
 
 import Login from '../../components/login/login.component';
+import logo from '../../assets/logo.png';
 
 import './login-page.styles.scss';
 
@@ -9,7 +10,10 @@ const LoginPage = () => {
     return (
         <div>
             <div className="img-container">
-                    <img alt="logo" height={80} width={100}/>
+                <img src={logo} alt="logo" height={200} width={200}/>
+            </div>
+            <div className="text-field">
+                <span>QUẢN LÝ THIẾT BỊ PHÒNG GYM</span>
             </div>
             <Route exact path='/' component={Login} />
         </div>
