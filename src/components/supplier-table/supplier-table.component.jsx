@@ -40,15 +40,21 @@ const bootstrapChildComponents = {
 
 const handleDel = async (id, delSupplier, accountId) => {
   try {
-    const response = await axios.post('http://localhost:3030/delete-supplier', {
-      id: id,
-      accountId: accountId
-    })
-    if(response.status == 200) {
-      delSupplier(id)
+    if (
+      window.confirm(
+        'có chắc muốn xóa!'
+      )
+    ) {
+      const response = await axios.post('http://localhost:3030/delete-supplier', {
+        id: id,
+        accountId: accountId
+      })
+      if(response.status == 200) {
+        delSupplier(id)
+      }
     }
   } catch (error) {
-    alert(error);
+    alert("không thể xóa nhà cung cấp");
   }
 }
 const EditButton = ({ rowData, history, match }) => {

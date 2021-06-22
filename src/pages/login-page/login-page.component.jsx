@@ -3,12 +3,13 @@ import { Route } from 'react-router-dom';
 
 import Login from '../../components/login/login.component';
 import logo from '../../assets/logo.png';
+import background from '../../assets/background.jpg'
 
 import './login-page.styles.scss';
 
 const LoginPage = () => {
     return (
-        <div>
+        <div className="bg">
             <div className="img-container">
                 <img src={logo} alt="logo" height={200} width={200}/>
             </div>

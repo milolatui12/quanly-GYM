@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { Form, Button } from 'react-bootstrap';
-import axios from 'axios';
 
 import Rodal from 'rodal/lib/rodal';
 

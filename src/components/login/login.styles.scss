@@ -1,4 +1,14 @@
 .form-container {
-    width: 30vw;
+    width: 25vw;
+    height: 40vh;
     margin: 10px auto;
+    padding: 10px;
+    background-color: rgba(216, 212, 206, 0.4);
+    border-radius: 8px;
+    
+    label {
+        color: rgb(13, 65, 107);
+        font-size: medium;
+        font-weight: 700;
+    }
 }

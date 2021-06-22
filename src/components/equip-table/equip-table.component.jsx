@@ -42,11 +42,17 @@ const bootstrapChildComponents = {
 
 const handleDel = async (id, userId, delEquip) => {
   try {
-  await axios.post('http://localhost:3030/delete-equipment', {
-      id: id,
-      accountId: userId
-    })
-    delEquip(id)
+    if (
+      window.confirm(
+        'có chắc muốn xóa!'
+      )
+    ) {
+      await axios.post('http://localhost:3030/delete-equipment', {
+        id: id,
+        accountId: userId
+      })
+      delEquip(id)
+    }
   } catch (error) {
     alert(error);
   }

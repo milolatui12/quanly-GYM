@@ -41,12 +41,18 @@ const bootstrapChildComponents = {
 
 const handleDel = async (rcp_code, delReceipt, accountId) => {
   try {
-    const response = await axios.post('http://localhost:3030/delete-receipt', {
-      rcp_code: rcp_code,
-      accountId: accountId
-    })
-    if(response.status == 200) {
-      delReceipt(rcp_code)
+    if (
+      window.confirm(
+        'có chắc muốn xóa!'
+      )
+    ) {
+      const response = await axios.post('http://localhost:3030/delete-receipt', {
+        rcp_code: rcp_code,
+        accountId: accountId
+      })
+      if(response.status == 200) {
+        delReceipt(rcp_code)
+      }
     }
   } catch (error) {
     alert("Không xóa được hóa đơn");
